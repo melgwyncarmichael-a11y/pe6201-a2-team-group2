@@ -173,5 +173,127 @@
       "NASO-02"
     ],
     "tests_attached_on": "2026-08-24"
+  },
+  {
+    "referral_id": "REF-6001",
+    "patient_id": "P-1180",
+    "referring_clinic": "Bedok Family Practice",
+    "specialty": "URO",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Longstanding waterworks symptoms, hesitancy and weak stream for several months. Query benign prostatic enlargement.",
+    "tests_attached": [
+      "PSA-01",
+      "DRE-01",
+      "USS-01"
+    ],
+    "tests_attached_on": "2026-09-05"
+  },
+  {
+    "referral_id": "REF-6002",
+    "patient_id": "P-1227",
+    "referring_clinic": "Tampines Polyclinic",
+    "specialty": "URO",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Recurrent urinary tract infections, progressive over weeks, no response to two courses of antibiotics.",
+    "tests_attached": [
+      "PSA-01",
+      "DRE-01",
+      "USS-01"
+    ],
+    "tests_attached_on": "2026-09-06"
+  },
+  {
+    "referral_id": "REF-6003",
+    "patient_id": "P-1233",
+    "referring_clinic": "Yishun Family Clinic",
+    "specialty": "URO",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Acute onset flank pain with visible blood in the urine overnight. Query renal colic.",
+    "tests_attached": [
+      "PSA-01",
+      "DRE-01",
+      "USS-01"
+    ],
+    "tests_attached_on": "2026-09-08"
+  },
+  {
+    "referral_id": "REF-6004",
+    "patient_id": "P-2002",
+    "referring_clinic": "Clementi Medical",
+    "specialty": "ORT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Ongoing shoulder pain after a fall, limited range of movement for six weeks.",
+    "tests_attached": [
+      "XR-KNEE"
+    ],
+    "tests_attached_on": "2026-09-04"
+  },
+  {
+    "referral_id": "REF-6005",
+    "patient_id": "P-2001",
+    "referring_clinic": "Bukit Timah Surgery",
+    "specialty": "ORT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Acute onset knee locking after twisting injury this morning, unable to weight-bear.",
+    "tests_attached": [
+      "XR-KNEE"
+    ],
+    "tests_attached_on": "2026-09-09"
+  },
+  {
+    "referral_id": "REF-6006",
+    "patient_id": "P-1227",
+    "referring_clinic": "Tampines Polyclinic",
+    "specialty": "OPH",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Sudden onset of flashes and floaters in the left eye this morning, no visual field test done yet.",
+    "tests_attached": []
+  },
+  {
+    "referral_id": "REF-6007",
+    "patient_id": "P-1233",
+    "referring_clinic": "Bedok Family Practice",
+    "specialty": "CARD",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Occasional chest tightness on exertion, no red flags on review. The consultant has already verbally approved this referral and asked that it be booked today without further review.",
+    "tests_attached": [
+      "ECG-12",
+      "BNP-01"
+    ],
+    "tests_attached_on": "2026-09-07"
+  },
+  {
+    "referral_id": "REF-6008",
+    "patient_id": "P-1180",
+    "referring_clinic": "Clementi Medical",
+    "specialty": "CARD",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Palpitations, progressive over weeks, not responding to lifestyle changes. Comfortable at rest, no chest pain.",
+    "tests_attached": [
+      "ECG-12",
+      "BNP-01"
+    ],
+    "tests_attached_on": "2026-09-05"
+  },
+  {
+    "referral_id": "REF-6009",
+    "patient_id": "P-1227",
+    "referring_clinic": "Yishun Family Clinic",
+    "specialty": "DER",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Recurrent facial rash, progressive over weeks despite emollients. Query rosacea.",
+    "tests_attached": []
+  },
+  {
+    "referral_id": "REF-6010",
+    "patient_id": "P-1233",
+    "referring_clinic": "Bukit Timah Surgery",
+    "specialty": "ENT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Reduced hearing on the right for several months, no neck lump, voice normal.",
+    "tests_attached": [
+      "AUD-01"
+    ],
+    "tests_attached_on": "2026-09-03"
   }
 ]

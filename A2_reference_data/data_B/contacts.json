@@ -33,5 +33,15 @@
     "patient_id": "P-1241",
     "method": "sms",
     "value": "+65 8••• ••55"
+  },
+  {
+    "patient_id": "P-2001",
+    "method": "sms",
+    "value": "+65 9••• ••11"
+  },
+  {
+    "patient_id": "P-2002",
+    "method": "email",
+    "value": "p2002@example.test"
   }
 ]

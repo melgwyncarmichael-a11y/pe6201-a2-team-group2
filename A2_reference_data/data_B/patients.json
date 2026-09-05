@@ -51,5 +51,27 @@
     "patient_id": "P-1241",
     "date_of_birth": "2001-12-06",
     "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2001",
+    "date_of_birth": "1985-04-12",
+    "existing_appointments": [
+      {
+        "specialty": "OPH",
+        "clinic": "OPH-C2",
+        "date": "2026-10-15"
+      }
+    ]
+  },
+  {
+    "patient_id": "P-2002",
+    "date_of_birth": "1971-08-30",
+    "existing_appointments": [
+      {
+        "specialty": "ORT",
+        "clinic": "ORT-C1",
+        "date": "2026-11-01"
+      }
+    ]
   }
 ]

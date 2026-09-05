@@ -120,5 +120,35 @@
       "tonsil",
       "voice"
     ]
+  },
+  {
+    "code": "URO",
+    "name": "Urology",
+    "mandatory_tests": [
+      {
+        "code": "PSA-01",
+        "name": "PSA blood test"
+      },
+      {
+        "code": "DRE-01",
+        "name": "digital rectal exam"
+      },
+      {
+        "code": "USS-01",
+        "name": "renal ultrasound"
+      }
+    ],
+    "red_flag_terms": [
+      "frank haematuria",
+      "acute urinary retention"
+    ],
+    "treats": [
+      "urinary",
+      "bladder",
+      "prostate",
+      "kidney",
+      "urine",
+      "waterworks"
+    ]
   }
 ]

@@ -174,5 +174,29 @@
     "date": "2026-11-10",
     "time": "09:40",
     "capacity_remaining": 2
+  },
+  {
+    "clinic": "URO-C1",
+    "specialty": "URO",
+    "band": "routine",
+    "date": "2026-09-25",
+    "time": "10:00",
+    "capacity_remaining": 2
+  },
+  {
+    "clinic": "URO-C2",
+    "specialty": "URO",
+    "band": "soon",
+    "date": "2026-10-07",
+    "time": "09:00",
+    "capacity_remaining": 1
+  },
+  {
+    "clinic": "URO-C3",
+    "specialty": "URO",
+    "band": "urgent",
+    "date": "2026-09-24",
+    "time": "11:00",
+    "capacity_remaining": 1
   }
 ]
