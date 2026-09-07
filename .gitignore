@@ -6,3 +6,4 @@ venv/
 .DS_Store
 *.key
 openrouter_key*
+docs/_*
