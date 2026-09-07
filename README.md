@@ -56,7 +56,9 @@ the measured comparison plan, are in `docs/HOW_IT_WORKS.pdf`.
 
 ## Status
 
-Scripted backend: 21 of 25 labelled cases scripted, all passing in both modes.
-Live battery, guardrail checklist (D3b), and the judgement check (D4) are not
-started — see the "what's still open" sections in `docs/DATA_NOTES.md` and the
-run guide.
+Scripted backend: **11 of 25 cases** have a script (`REF-5602` plus our 10
+additions) — the other 14 shipped cases still need one each. Those 11 produce
+**21 graded trials** (negative cases run 3×), all passing in both decision
+modes. Live battery, guardrail checklist (D3b), and the judgement check (D4)
+are not started — see the "what's still open" sections in `docs/DATA_NOTES.md`
+and the run guide.

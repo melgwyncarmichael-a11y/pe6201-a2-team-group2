@@ -24,8 +24,10 @@ on the team has traced through the logic themselves.
 - `A2_reference_data/data_B/*.json` — regenerated from the above.
 - `A2_reference_data/expected_outcomes_B.json` — 10 new labels appended,
   shipped 15 untouched.
-- `A2_scaffold/backends.py` — 10 new entries in `SCRIPTS`, so every new case
-  runs free on the scripted backend, in both decision modes.
+- `A2_scaffold/backends.py` — 10 new entries in `SCRIPTS`, one per new case,
+  so all 10 run free on the scripted backend in both decision modes. (Of the
+  15 *shipped* cases, only `REF-5602` has a script — it came with the
+  scaffold. The other 14 shipped cases still need one each; see §5.)
 - `A2_scaffold/tools.py` — added `resolve_routing()`.
 - `A2_scaffold/agent.py`, `guardrails.py`, `config.py`, `prompt.py` — the
   `DECISION_MODE` switch and the route-consistency guardrail (see the team's
@@ -33,7 +35,10 @@ on the team has traced through the logic themselves.
   against it, not the design argument itself).
 
 Verified: `check_my_data.py` → "Your data hangs together." `run_eval.py
---mode rules` and `--mode model` both → 21/21 scripted trials pass.
+--mode rules` and `--mode model` both → all scripted trials pass. Note the
+counts: **11 cases are scripted** (`REF-5602` + our 10); because negative
+cases run 3 trials each and bookings run 1, that's **21 graded trials**, all
+passing. "21" is a trial count, not a case count.
 
 ---
 
@@ -149,6 +154,12 @@ money and isn't free to debug against.
 | Escalate — history | 2–3 | 2 | 0–1 |
 | Escalate — hostile | 3 min | 3 | 0+ (more variety still helps) |
 
+**Scripts for the shipped cases** — 14 of the 15 shipped cases (everything
+except `REF-5602`) have no `SCRIPTS` entry in `backends.py`, so `run_eval.py`
+doesn't exercise them on the free backend at all. Each needs one hand-written
+move sequence, same shape as the 10 we added. Until then, "all scripted
+trials pass" only speaks to 11 of the 25 cases.
+
 **Guardrail checklist (D3b)** — separate deliverable, minimum 10 cases, ≥3
 hostile free text, each naming the specific wrong behaviour it catches and
 the observed result. **Zero cases exist for this yet.** It can lean on the
@@ -159,5 +170,5 @@ was correct. Not started.
 
 **Judgement check** — every `must_record` list above needs a person (or a
 declared second model) to actually read the `reason` field and confirm it's
-there. The code check passing (21/21) is half the picture, per the
-harness's own reminder.
+there. The code check passing (21/21 trials, across 11 scripted cases) is
+half the picture, per the harness's own reminder.

@@ -202,8 +202,10 @@ the rules-vs-model measurement actually happen. Not done yet.
 
 We have 25 test cases. Each has a known-correct answer written by hand from the
 brief's routing table *before* the agent was ever run on it — so the agent
-cannot simply agree with itself. The harness runs the agent and compares. 21
-of the 25 currently run on the free backend and all pass.
+cannot simply agree with itself. The harness runs the agent and compares. 11
+of the 25 currently have a script and run on the free backend; because
+negative cases run three times each, that is 21 graded trials, and all pass.
+The other 14 cases still need a script written before they can run.
 
 That is only half the check. Passing means the *decision* matched. A person
 still has to read the agent's written *reason* and confirm it says the right
