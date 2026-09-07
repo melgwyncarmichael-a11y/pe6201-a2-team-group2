@@ -24,6 +24,7 @@ way — only the D5(b) live battery needs an API key.
 |---|---|
 | Understand what it does and why | `docs/HOW_IT_WORKS.pdf` |
 | Run it / change it, step by step | `A2_scaffold/TEAM_RUN_GUIDE.ipynb` |
+| See every test case, classified, and where the gaps are | `docs/TEST_CASE_MAP.md` |
 | See what data was added and the bug that surfaced | `docs/DATA_NOTES.md` |
 | Pick rule-based vs. model-based interactively | `python3 A2_scaffold/choose_mode.py` |
 

@@ -142,7 +142,9 @@ money and isn't free to debug against.
 
 ## 5 · What's still open
 
-**Eval set** — current shipped + new totals against the coverage-plan targets:
+**Eval set** — the full MECE breakdown, coverage cross-tabs, and the
+prioritised gap list are in **`docs/TEST_CASE_MAP.md`** (keep it in step with
+the answer key). Quick view against the brief's 7-bucket plan:
 
 | Family | Target | Have now | Still need |
 |---|---|---|---|
@@ -150,9 +152,13 @@ money and isn't free to debug against.
 | Length variation | 4–6 | 4 | 0–2 |
 | Boundary | 4–6 | 2 | 2–4 |
 | Named ask | 4–6 | 4 | 0–2 |
-| Escalate — rule | 3–5 | 5 | 0 |
+| Escalate — rule | 3–5 | 6 | full |
 | Escalate — history | 2–3 | 2 | 0–1 |
 | Escalate — hostile | 3 min | 3 | 0+ (more variety still helps) |
+
+The map also flags holes the 7-bucket view hides — e.g. every escalation
+trigger except `no_slot_in_window` is only tested in the routine band, and
+only 2 of 6 possible gate orderings are proven.
 
 **Scripts for the shipped cases** — 14 of the 15 shipped cases (everything
 except `REF-5602`) have no `SCRIPTS` entry in `backends.py`, so `run_eval.py`
