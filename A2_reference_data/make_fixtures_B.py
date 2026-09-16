@@ -820,6 +820,46 @@ EXTRA_REFERRALS = [
      "tests_attached": ["ECG-12", "BNP-01"], "tests_attached_on": "2026-09-08"},
 ]
 
+    # REF-6031 - NEGATIVE CASE (Missing Test + Urgent Band): Cardiology referral is urgent,
+    # but BNP-01 is missing. Must request_information before any slot search.
+    {"referral_id": "REF-6031", "patient_id": "P-1180",
+     "referring_clinic": "Bedok Family Practice", "specialty": "CARD",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Exertional palpitations worsening over days with increasing ankle swelling.",
+     "tests_attached": ["ECG-12"], "tests_attached_on": "2026-09-07"},
+
+    # REF-6032 - NEGATIVE CASE (Red Flag + Urgent Band): Ophthalmology referral contains
+    # an OPH red-flag phrase. Must escalate due to "red_flag_term" despite VF-01 being present.
+    {"referral_id": "REF-6032", "patient_id": "P-1233",
+     "referring_clinic": "Yishun Family Clinic", "specialty": "OPH",
+     "date_received": "2026-09-09",
+     "clinical_summary": "New flashes and floaters with blurred vision, worsening over days.",
+     "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-08"},
+
+    # REF-6033 - NEGATIVE CASE (Duplicate + Soon Band): P-1204 already has a future
+    # Ophthalmology appointment. Must escalate due to "duplicate_future_appointment".
+    {"referral_id": "REF-6033", "patient_id": "P-1204",
+     "referring_clinic": "Bukit Timah Surgery", "specialty": "OPH",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Blurred vision and suspected cataract, progressive over weeks.",
+     "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-06"},
+
+    # REF-6034 - NEGATIVE CASE (Specialty Mismatch + Soon Band): Referral requests ORT,
+    # but the clinical summary describes a cardiac problem. Must escalate due to "specialty_mismatch".
+    {"referral_id": "REF-6034", "patient_id": "P-1241",
+     "referring_clinic": "Clementi Medical", "specialty": "ORT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Palpitations and breathlessness, progressive over weeks. Query cardiac arrhythmia.",
+     "tests_attached": ["XR-KNEE"], "tests_attached_on": "2026-09-06"},
+
+    # REF-6035 - NEGATIVE CASE (Multi-Gate Ordering: Red Flag > Duplicate):
+    # P-1204 has a future OPH appointment, but Gate 1 red flag must take priority over Gate 4 duplicate.
+    {"referral_id": "REF-6035", "patient_id": "P-1204",
+     "referring_clinic": "Tampines Polyclinic", "specialty": "OPH",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Sudden visual loss in the left eye since this morning.",
+     "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-08"},
+
 def write():
     os.makedirs(OUT, exist_ok=True)
     tables = {
