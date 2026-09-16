@@ -866,6 +866,95 @@ SCRIPTS = {
                     "than the shipped REF-5671 - one case for a whole trigger "
                     "was fragile."},
     ],
+
+    "REF-6021": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6021"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "RESP",
+                                                "referral_id": "REF-6021"}),
+                   ("lookup_patient", {"patient_id": "P-1180"})]},
+        {"thought": "SPIRO-01 present, no red flag, right department, no "
+                    "duplicate. Routine band, 8-week window from as_of 2026-09-09 to 2026-11-04.",
+         "calls": [("get_clinic_slots", {"specialty": "RESP", "band": "routine",
+                                         "from": "2026-09-09", "to": "2026-11-04"})]},
+        {"thought": "First routine RESP slot is 2026-11-04. Book it.",
+         "calls": [("book_slot", {"clinic": "RESP-C1", "date": "2026-11-04",
+                                  "time": "09:00", "referral_id": "REF-6021"})]},
+        {"final": {"decision": "book",
+                  "booked": {"clinic": "RESP-C1", "date": "2026-11-04", "time": "09:00"},
+                  "reason": "Routine band, 8-week window from as_of 2026-09-09 closing 2026-11-04. "
+                            "SPIRO-01 present for Respiratory Medicine. No existing RESP appointment for P-1180."},
+         "thought": "Ordinary routine booking for the newly added Respiratory Medicine specialty using RESP-C1 slot."},
+    ],
+
+    "REF-6022": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6022"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "OPH",
+                                                "referral_id": "REF-6022"}),
+                   ("lookup_patient", {"patient_id": "P-1227"})]},
+        {"thought": "'Progressive over weeks' sets soon band, 4-week window from 2026-09-09 to 2026-10-07. "
+                    "VF-01 present, no red flag, no duplicate. Search soon slots.",
+         "calls": [("get_clinic_slots", {"specialty": "OPH", "band": "soon",
+                                         "from": "2026-09-09", "to": "2026-10-07"})]},
+        {"thought": "Oph soon slot is available on 2026-09-29. Book it.",
+         "calls": [("book_slot", {"clinic": "OPH-C3", "date": "2026-09-29",
+                                  "time": "10:00", "referral_id": "REF-6022"})]},
+        {"final": {"decision": "book",
+                  "booked": {"clinic": "OPH-C3", "date": "2026-09-29", "time": "10:00"},
+                  "reason": "Urgency band soon set by 'progressive over weeks', 4-week window. "
+                            "VF-01 present. No duplicate for P-1227."},
+         "thought": "Exercises the 'soon' urgency band using the unused Oph soon slot."},
+    ],
+
+    "REF-6023": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6023"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "CARD",
+                                                "referral_id": "REF-6023"}),
+                   ("lookup_patient", {"patient_id": "P-1241"})]},
+        {"final": {"decision": "request_information", "missing": "serum BNP BNP-01",
+                  "reason": "No red flag, right department. Cardiology requires two mandatory tests (ECG-12 and BNP-01); "
+                            "only ECG-12 was attached and it does not satisfy the full requirement. "
+                            "Naming serum BNP-01. slots_queried is 0."},
+         "thought": "Cardiology missing one of two tests case; request information, no slot search."},
+    ],
+
+    "REF-6024": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6024"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "ORT",
+                                                "referral_id": "REF-6024"}),
+                   ("lookup_patient", {"patient_id": "P-1233"})]},
+        {"thought": "'Worsening over days' sets urgent band, 2-week window from as_of 2026-09-09 to 2026-09-23. "
+                    "XR-KNEE present. Search urgent slots to check availability.",
+         "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "urgent",
+                                         "from": "2026-09-09", "to": "2026-09-23"})]},
+        {"final": {"decision": "escalate", "trigger": "no_slot_in_window",
+                  "reason": "Urgency band urgent and the 2-week window. "
+                            "Search performed: no qualifying urgent Orthopaedics slot existed within the window. "
+                            "Escalate to triage nurse."},
+         "thought": "Urgent referral where no valid slot falls inside the 2-week window, requiring escalation."},
+    ],
+
+    "REF-6025": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6025"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "CARD",
+                                                "referral_id": "REF-6025"}),
+                   ("lookup_patient", {"patient_id": "P-1192"})]},
+        {"final": {"decision": "escalate", "trigger": "red_flag_term",
+                  "reason": "The red-flag term 'crushing chest pain' is present under Cardiology. "
+                            "Red flag outranks everything else, including clean test results; "
+                            "escalate immediately to triage nurse."},
+         "thought": "Negative case. Contains a critical red-flag term under Cardiology that immediately forces an escalation."},
+    ],
+    
 }
 
 
