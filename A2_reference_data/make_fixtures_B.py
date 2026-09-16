@@ -731,6 +731,8 @@ EXTRA_REFERRALS = [
      "clinical_summary": "Persistent facial rash and itching for three "
                          "weeks, no other complaints.",
      "tests_attached": []},
+
+
 ]
 
 
@@ -753,6 +755,7 @@ def write():
         json.dump({"as_of": AS_OF}, fh, indent=2)
     print(f"       as_of.json  ({AS_OF})")
     return tables
+#ti
 
 
 if __name__ == "__main__":
