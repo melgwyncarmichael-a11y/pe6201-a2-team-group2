@@ -417,5 +417,73 @@
       "escalate_to triage nurse"
     ],
     "note": "A second specialty_mismatch case (the shipped REF-5671 is OPH; this one is ENT) - one case testing a whole trigger is fragile. Caught a real labelling mistake while writing it: the first draft's summary said 'no ear or throat symptoms', which contains the ENT treats words 'ear' and 'throat' as literal substrings despite the negation, so it resolved to request_information instead of specialty_mismatch. Rewritten to avoid ENT's treats words entirely - a live example of the substring-match blind spot to negation."
+  },
+  {
+    "case_id": "REF-6021",
+    "expected_decision": "book",
+    "booked": {
+      "clinic": "RESP-C1",
+      "date": "2026-11-04",
+      "time": "09:00"
+    },
+    "family": "ordinary_act",
+    "must_record": [
+      "urgency band routine and the 8-week window",
+      "SPIRO-01 present for Respiratory Medicine",
+      "no existing RESP appointment for P-1180"
+    ],
+    "note": "Ordinary routine booking for the newly added Respiratory Medicine specialty using RESP-C1 slot."
+  },
+  {
+    "case_id": "REF-6022",
+    "expected_decision": "book",
+    "booked": {
+      "clinic": "OPH-C3",
+      "date": "2026-09-29",
+      "time": "10:00"
+    },
+    "family": "soon_booking",
+    "must_record": [
+      "urgency band soon and what set it (\"progressive over weeks\")",
+      "the 4-week window",
+      "VF-01 present"
+    ],
+    "note": "Exercises the 'soon' urgency band using the unused OPH soon slot."
+  },
+  {
+    "case_id": "REF-6023",
+    "expected_decision": "request_information",
+    "missing": "serum BNP-01",
+    "family": "mandatory_test_missing",
+    "must_record": [
+      "BNP-01 named",
+      "the specialty CARD rule that requires two mandatory tests",
+      "that ECG-12 was attached and does not satisfy the full requirement"
+    ],
+    "note": "Cardiology requires both ECG-12 and BNP-01; only ECG-12 is attached. slots_queried must be 0."
+  },
+  {
+    "case_id": "REF-6024",
+    "expected_decision": "escalate",
+    "trigger": "no_slot_in_window",
+    "family": "no_slot_in_window",
+    "must_record": [
+      "urgency band urgent and the 2-week window",
+      "that no qualifying urgent Orthopaedics slot existed within the window",
+      "escalate_to triage nurse"
+    ],
+    "note": "Urgent referral where no valid slot falls inside the 2-week window, requiring escalation."
+  },
+  {
+    "case_id": "REF-6025",
+    "expected_decision": "escalate",
+    "trigger": "red_flag_term",
+    "family": "red_flag",
+    "must_record": [
+      "the red-flag term \"crushing chest pain\"",
+      "escalate_to triage nurse",
+      "that clean test results did not override the red flag"
+    ],
+    "note": "Negative case. Contains a critical red-flag term under Cardiology that immediately forces an escalation."
   }
 ]
