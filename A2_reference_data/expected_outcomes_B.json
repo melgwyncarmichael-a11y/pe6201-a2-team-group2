@@ -552,5 +552,69 @@
       "ECG-12 and BNP-01 both present"
     ],
     "note": "Positive case. Urgent Cardiology booking with both mandatory tests attached into the 2-week urgent window."
-  }
+  },
+  {
+    "case_id": "REF-6031",
+    "expected_decision": "request_information",
+    "missing": "serum BNP BNP-01",
+    "family": "urgent_one_of_two_mandatory_tests_missing",
+    "must_record": [
+        "urgency band urgent set by \"worsening over days\"",
+        "BNP-01 named specifically",
+        "that ECG-12 was received",
+        "that no slot search was performed because the referral was incomplete"
+    ],
+    "note": "Negative case. Extends mandatory-test-missing coverage into the urgent band. CARD requires both ECG-12 and BNP-01."
+},
+{
+    "case_id": "REF-6032",
+    "expected_decision": "escalate",
+    "trigger": "red_flag_term",
+    "family": "urgent_red_flag",
+    "must_record": [
+        "the OPH red-flag term \"flashes and floaters\"",
+        "urgency band urgent set by \"worsening over days\"",
+        "that VF-01 was present",
+        "that the red flag requires escalation rather than booking"
+    ],
+    "note": "Negative case. Tests red-flag escalation in the urgent band even though the mandatory OPH test is present."
+},
+{
+    "case_id": "REF-6033",
+    "expected_decision": "escalate",
+    "trigger": "duplicate_future_appointment",
+    "family": "soon_duplicate_future_appointment",
+    "must_record": [
+        "urgency band soon set by \"progressive over weeks\"",
+        "P-1204's existing OPH appointment on 2026-10-02",
+        "that the existing appointment is in the future and in the same specialty"
+    ],
+    "note": "Negative case. Extends duplicate-future-appointment coverage into the soon band."
+},
+{
+    "case_id": "REF-6034",
+    "expected_decision": "escalate",
+    "trigger": "specialty_mismatch",
+    "family": "soon_specialty_mismatch",
+    "must_record": [
+        "that ORT was the requested specialty",
+        "that the clinical summary describes a cardiac problem",
+        "urgency band soon set by \"progressive over weeks\"",
+        "that XR-KNEE was attached so missing evidence was not the reason for escalation"
+    ],
+    "note": "Negative case. Adds a second specialty-mismatch example and extends this trigger into the soon band."
+},
+{
+    "case_id": "REF-6035",
+    "expected_decision": "escalate",
+    "trigger": "red_flag_term",
+    "family": "red_flag_outranks_duplicate",
+    "must_record": [
+        "the OPH red-flag term \"sudden visual loss\"",
+        "that P-1204 also has a future OPH appointment on 2026-10-02",
+        "that Gate 1 red flag takes priority over Gate 4 duplicate",
+        "that the referral was escalated because of the red flag"
+    ],
+    "note": "Multi-gate negative case. Both a red flag and a future duplicate are present. Proves gate ordering: red flag must outrank duplicate."
+}
 ]
