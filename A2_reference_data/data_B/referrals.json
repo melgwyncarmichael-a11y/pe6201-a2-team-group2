@@ -526,5 +526,65 @@
       "BNP-01"
     ],
     "tests_attached_on": "2026-09-08"
+  },
+  {
+    "referral_id": "REF-6031",
+    "patient_id": "P-1180",
+    "referring_clinic": "Bedok Family Practice",
+    "specialty": "CARD",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Exertional palpitations worsening over days with increasing ankle swelling.",
+    "tests_attached": [
+      "ECG-12"
+    ],
+    "tests_attached_on": "2026-09-07"
+  },
+  {
+    "referral_id": "REF-6032",
+    "patient_id": "P-1233",
+    "referring_clinic": "Yishun Family Clinic",
+    "specialty": "OPH",
+    "date_received": "2026-09-09",
+    "clinical_summary": "New flashes and floaters with blurred vision, worsening over days.",
+    "tests_attached": [
+      "VF-01"
+    ],
+    "tests_attached_on": "2026-09-08"
+  },
+  {
+    "referral_id": "REF-6033",
+    "patient_id": "P-1204",
+    "referring_clinic": "Bukit Timah Surgery",
+    "specialty": "OPH",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Blurred vision and suspected cataract, progressive over weeks.",
+    "tests_attached": [
+      "VF-01"
+    ],
+    "tests_attached_on": "2026-09-06"
+  },
+  {
+    "referral_id": "REF-6034",
+    "patient_id": "P-1241",
+    "referring_clinic": "Clementi Medical",
+    "specialty": "ORT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Palpitations and breathlessness, progressive over weeks. Query cardiac arrhythmia.",
+    "tests_attached": [
+      "XR-KNEE"
+    ],
+    "tests_attached_on": "2026-09-06"
+  },
+  {
+    "referral_id": "REF-6035",
+    "patient_id": "P-1204",
+    "referring_clinic": "Tampines Polyclinic",
+    "specialty": "OPH",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Sudden visual loss in the left eye since this morning.",
+    "tests_attached": [
+      "VF-01"
+    ],
+    "tests_attached_on": "2026-09-08"
   }
 ]

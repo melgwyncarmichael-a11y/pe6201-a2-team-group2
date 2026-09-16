@@ -818,7 +818,6 @@ EXTRA_REFERRALS = [
      "date_received": "2026-09-09",
      "clinical_summary": "Rapidly worsening dyspnea on minimal exertion over days. Ankle swelling noted.",
      "tests_attached": ["ECG-12", "BNP-01"], "tests_attached_on": "2026-09-08"},
-]
 
     # REF-6031 - NEGATIVE CASE (Missing Test + Urgent Band): Cardiology referral is urgent,
     # but BNP-01 is missing. Must request_information before any slot search.
@@ -859,6 +858,7 @@ EXTRA_REFERRALS = [
      "date_received": "2026-09-09",
      "clinical_summary": "Sudden visual loss in the left eye since this morning.",
      "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-08"},
+]
 
 def write():
     os.makedirs(OUT, exist_ok=True)
