@@ -198,5 +198,21 @@
     "date": "2026-09-24",
     "time": "11:00",
     "capacity_remaining": 1
+  },
+  {
+    "clinic": "RESP-C1",
+    "specialty": "RESP",
+    "band": "routine",
+    "date": "2026-11-04",
+    "time": "09:00",
+    "capacity_remaining": 1
+  },
+  {
+    "clinic": "RESP-C2",
+    "specialty": "RESP",
+    "band": "soon",
+    "date": "2026-10-08",
+    "time": "10:30",
+    "capacity_remaining": 1
   }
 ]

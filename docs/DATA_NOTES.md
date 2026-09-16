@@ -40,6 +40,11 @@ counts: **11 cases are scripted** (`REF-5602` + our 10); because negative
 cases run 3 trials each and bookings run 1, that's **21 graded trials**, all
 passing. "21" is a trial count, not a case count.
 
+> **Superseded** — this was the state right after this first batch. The 14
+> remaining shipped cases were scripted in a later commit, and a second
+> 10-case batch was added after that. See §6 for the current totals; §1–5
+> below are the original build log for this first batch and are left as-is.
+
 ---
 
 ## 2 · The 10 new cases, and the gap each one closes
@@ -140,41 +145,83 @@ money and isn't free to debug against.
 
 ---
 
-## 5 · What's still open
+## 5 · What was still open at the end of the first batch
 
-**Eval set** — the full MECE breakdown, coverage cross-tabs, and the
-prioritised gap list are in **`docs/TEST_CASE_MAP.md`** (keep it in step with
-the answer key). Quick view against the brief's 7-bucket plan:
+(Kept as historical record. See §6 for what closed and what's actually
+still open now.)
 
-| Family | Target | Have now | Still need |
+**Scripts for the shipped cases** — 14 of the 15 shipped cases had no
+`SCRIPTS` entry yet. **Closed** in a later commit — see §6.
+
+**Guardrail checklist (D3b), judgement check** — not started then, still
+not started now. See §6.
+
+---
+
+## 6 · Second pass — 14 shipped scripts + 10 more cases + the MECE map
+
+Two things happened after the first batch, in separate commits:
+
+**a) The 14 remaining shipped cases got scripted.** Same discipline as
+before — each move sequence worked out from the routing table and the
+answer key, not copied from a run. This closed the gap noted in §5: every
+one of the 15 shipped cases now runs on the free backend, not just
+`REF-5602`.
+
+**b) `docs/TEST_CASE_MAP.md` was written** — a proper MECE classification
+(Outcome, then Mechanism within it, with band/ntests/multi-gate/boundary as
+non-exclusive tags) replacing reliance on the brief's 7 loose buckets for
+internal tracking. It's the authoritative case breakdown now; this file
+stays the build log.
+
+**c) A second batch of 10 cases was added** (`REF-6011`–`REF-6020`),
+prioritised directly from that map's gap list:
+
+| Cases | What they close |
+|---|---|
+| `REF-6011`, `REF-6012` | boundary in the routine and soon bands (only urgent/soon existed before) |
+| `REF-6013` | another plain ordinary-act copy-base |
+| `REF-6014`–`REF-6017` | **all four** previously-unproven gate orderings (red flag > wrong dept, red flag > duplicate, wrong dept > duplicate, missing test > duplicate) — only 2 of 6 were proven before this |
+| `REF-6018`, `REF-6019` | first non-routine-band instances of `red_flag_term` and `duplicate_future_appointment` — every trigger except `missing_test` now has non-routine coverage |
+| `REF-6020` | a second `specialty_mismatch` case (only one existed) |
+
+**A real labelling mistake, caught and fixed before it shipped:**
+`REF-6020`'s first draft read *"no ear or throat symptoms"* — which
+contains the literal substrings `"ear"` and `"throat"`, both ENT `treats`
+words. Substring matching doesn't understand negation, so
+`right_department` came back `True` anyway, and the case resolved to
+`request_information` instead of the intended `specialty_mismatch`. Caught
+by running the independent `resolve_routing` cross-check (below) before
+writing the label into the answer key, not after. Rewritten to avoid ENT's
+treats words entirely.
+
+**Verification, on the current state (35 cases, all scripted):**
+- `check_my_data.py` → "Your data hangs together."
+- `run_eval.py --mode rules --all` and `--mode model --all` → **81/81
+  trials pass**, both modes.
+- **Every one of the 35 labels independently cross-checked** against
+  `tools.resolve_routing()` computed fresh from the fixture data — not just
+  checked for existence. Zero real mismatches; the only differences are the
+  expected ones (`no_slot_in_window` and hostile-text cases, where
+  `resolve_routing`'s four gates legitimately can't see the reason).
+
+**Current coverage against the brief's 7 buckets** (full detail, including
+the trigger×band cross-tab and the gate-ordering table, is in
+`docs/TEST_CASE_MAP.md`):
+
+| Family | Target | Have | Still need |
 |---|---|---|---|
-| Ordinary act | 10–14 | 5 | 5–9 |
-| Length variation | 4–6 | 4 | 0–2 |
-| Boundary | 4–6 | 2 | 2–4 |
-| Named ask | 4–6 | 4 | 0–2 |
-| Escalate — rule | 3–5 | 6 | full |
-| Escalate — history | 2–3 | 2 | 0–1 |
-| Escalate — hostile | 3 min | 3 | 0+ (more variety still helps) |
+| Ordinary act | 10–14 | 6 | 4–8 |
+| Length variation | 4–6 | 4 | at floor |
+| Boundary | 4–6 | 4 | at floor |
+| Named ask | 4–6 | 5 | within range |
+| Escalate — rule | 3–5 | 10 | past target |
+| Escalate — history | 2–3 | 3 | at ceiling |
+| Escalate — hostile | 3 min | 3 | at floor |
 
-The map also flags holes the 7-bucket view hides — e.g. every escalation
-trigger except `no_slot_in_window` is only tested in the routine band, and
-only 2 of 6 possible gate orderings are proven.
-
-**Scripts for the shipped cases** — 14 of the 15 shipped cases (everything
-except `REF-5602`) have no `SCRIPTS` entry in `backends.py`, so `run_eval.py`
-doesn't exercise them on the free backend at all. Each needs one hand-written
-move sequence, same shape as the 10 we added. Until then, "all scripted
-trials pass" only speaks to 11 of the 25 cases.
-
-**Guardrail checklist (D3b)** — separate deliverable, minimum 10 cases, ≥3
-hostile free text, each naming the specific wrong behaviour it catches and
-the observed result. **Zero cases exist for this yet.** It can lean on the
-same hostile-text referrals above for its ≥3 requirement, but it's testing a
-different thing — whether the guardrail *layer itself* fires (step cap,
-budget, dedup, autonomy gate, route-consistency), not whether the decision
-was correct. Not started.
-
-**Judgement check** — every `must_record` list above needs a person (or a
-declared second model) to actually read the `reason` field and confirm it's
-there. The code check passing (21/21 trials, across 11 scripted cases) is
-half the picture, per the harness's own reminder.
+**Still genuinely open**: `missing_test` in a non-routine band (the one
+trigger with zero non-routine coverage left), a second `specialty_mismatch`
+outside routine, more plain ordinary-act cases, the capacity-0 case
+(blocked on a `get_clinic_slots` design decision), the guardrail checklist
+(D3b — zero cases), and the judgement check (D4 — nobody's read the
+`reason` fields yet).

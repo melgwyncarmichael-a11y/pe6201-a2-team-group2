@@ -150,5 +150,29 @@
       "urine",
       "waterworks"
     ]
+  },
+  {
+    "code": "RESP",
+    "name": "Respiratory Medicine",
+    "mandatory_tests": [
+      {
+        "code": "SPIRO-01",
+        "name": "spirometry"
+      }
+    ],
+    "red_flag_terms": [
+      "coughing up blood",
+      "sudden severe breathlessness"
+    ],
+    "treats": [
+      "cough",
+      "wheeze",
+      "asthma",
+      "lung",
+      "sputum",
+      "breathing",
+      "breathless",
+      "airway"
+    ]
   }
 ]

@@ -468,6 +468,15 @@ EXTRA_SPECIALTIES = [
                          {"code": "USS-01", "name": "renal ultrasound"}],
      "red_flag_terms": ["frank haematuria", "acute urinary retention"],
      "treats": ["urinary", "bladder", "prostate", "kidney", "urine", "waterworks"]},
+
+    # A SECOND new specialty - for the routine/soon boundary templates
+    # (REF-6011/6012). Isolated pools again, so no shipped or URO booking
+    # case is disturbed.
+    {"code": "RESP", "name": "Respiratory Medicine",
+     "mandatory_tests": [{"code": "SPIRO-01", "name": "spirometry"}],
+     "red_flag_terms": ["coughing up blood", "sudden severe breathlessness"],
+     "treats": ["cough", "wheeze", "asthma", "lung", "sputum", "breathing",
+               "breathless", "airway"]},
 ]
 
 EXTRA_CLINIC_SLOTS = [
@@ -483,6 +492,15 @@ EXTRA_CLINIC_SLOTS = [
     # case: must escalate no_slot_in_window despite a slot existing.
     {"clinic": "URO-C3", "specialty": "URO", "band": "urgent",
      "date": "2026-09-24", "time": "11:00", "capacity_remaining": 1},
+
+    # RESP+routine: the ONLY slot is exactly the last legal day of the
+    # 8-week routine window (as_of + 56 days = 2026-11-04). Books.
+    {"clinic": "RESP-C1", "specialty": "RESP", "band": "routine",
+     "date": "2026-11-04", "time": "09:00", "capacity_remaining": 1},
+    # RESP+soon: the ONLY slot is exactly ONE DAY PAST the 4-week soon
+    # window (2026-10-07 is the last legal day). Must escalate.
+    {"clinic": "RESP-C2", "specialty": "RESP", "band": "soon",
+     "date": "2026-10-08", "time": "10:30", "capacity_remaining": 1},
 ]
 
 EXTRA_PATIENTS = [
@@ -606,6 +624,113 @@ EXTRA_REFERRALS = [
      "clinical_summary": "Reduced hearing on the right for several months, no "
                          "neck lump, voice normal.",
      "tests_attached": ["AUD-01"], "tests_attached_on": "2026-09-03"},
+
+    # REF-6011 - BOUNDARY (routine): the only RESP routine slot sits exactly
+    # on the last legal day (as_of + 56 days). Must still book.
+    {"referral_id": "REF-6011", "patient_id": "P-1180",
+     "referring_clinic": "Clementi Medical", "specialty": "RESP",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Chronic cough and wheeze for several months, worse "
+                         "at night. Query asthma. No blood in the sputum.",
+     "tests_attached": ["SPIRO-01"], "tests_attached_on": "2026-09-05"},
+
+    # REF-6012 - BOUNDARY (soon): the only RESP soon slot is one day past the
+    # window. All four gates are clean; must escalate no_slot_in_window.
+    {"referral_id": "REF-6012", "patient_id": "P-1227",
+     "referring_clinic": "Tampines Polyclinic", "specialty": "RESP",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Persistent dry cough and breathlessness, progressive "
+                         "over weeks, not settling. Query interstitial lung "
+                         "disease.",
+     "tests_attached": ["SPIRO-01"], "tests_attached_on": "2026-09-06"},
+
+    # REF-6013 - plain ordinary routine booking. Nothing special - the
+    # copy-base for the bulk of the "ordinary act" family. Reuses the
+    # existing free CARD routine slot (CARD-C2, 2026-10-21), so it needs no
+    # new fixtures beyond this referral.
+    {"referral_id": "REF-6013", "patient_id": "P-1233",
+     "referring_clinic": "Bukit Timah Surgery", "specialty": "CARD",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Stable exertional breathlessness for six months, no "
+                         "chest pain, no ankle swelling. Query ischaemic "
+                         "heart disease.",
+     "tests_attached": ["ECG-12", "BNP-01"], "tests_attached_on": "2026-09-04"},
+
+    # REF-6014 - ORDERING: red flag AND wrong department both present.
+    # Deliberately avoids every ORT treats word so gate 2 would ALSO fire -
+    # gate 1 must win. Tests present so gate 3 can't be the reason either.
+    {"referral_id": "REF-6014", "patient_id": "P-1180",
+     "referring_clinic": "Clementi Medical", "specialty": "ORT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Sudden saddle anaesthesia and loss of bladder "
+                         "control noted on examination; no orthopaedic "
+                         "complaint volunteered.",
+     "tests_attached": ["XR-KNEE"], "tests_attached_on": "2026-09-08"},
+
+    # REF-6015 - ORDERING: red flag AND a genuine future duplicate both
+    # present. P-1204 already has REF-5684's future OPH appointment - reused
+    # here for a second referral. Right department and tests present, so
+    # only gates 1 and 4 are in play. Gate 1 must win.
+    {"referral_id": "REF-6015", "patient_id": "P-1204",
+     "referring_clinic": "Bukit Timah Surgery", "specialty": "OPH",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Sudden visual loss in the left eye since this "
+                         "morning, no pain.",
+     "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-07"},
+
+    # REF-6016 - ORDERING: wrong department AND a genuine future duplicate
+    # both present. P-1192 already has REF-5645's future ORT appointment.
+    # No red flag, tests present, no ORT treats word in the summary - only
+    # gates 2 and 4 are in play. Gate 2 must win.
+    {"referral_id": "REF-6016", "patient_id": "P-1192",
+     "referring_clinic": "Bedok Family Practice", "specialty": "ORT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Persistent headaches with visual disturbance for "
+                         "two weeks, no other symptoms.",
+     "tests_attached": ["XR-KNEE"], "tests_attached_on": "2026-09-06"},
+
+    # REF-6017 - ORDERING: a missing test AND a genuine future duplicate
+    # both present. Same patient as REF-6016 (P-1192, future ORT
+    # appointment), different referral. No red flag, right department, XR-
+    # KNEE NOT attached - only gates 3 and 4 are in play. Gate 3 must win,
+    # and the outcome is request_information, not escalate.
+    {"referral_id": "REF-6017", "patient_id": "P-1192",
+     "referring_clinic": "Tampines Polyclinic", "specialty": "ORT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Ongoing knee pain for three months following a "
+                         "fall.",
+     "tests_attached": []},
+
+    # REF-6018 - a red flag alongside an urgency TRIGGER WORD, in a
+    # different band than every other shipped/added red-flag case. Proves
+    # the red flag still escalates regardless of what band the same text
+    # would otherwise compute to.
+    {"referral_id": "REF-6018", "patient_id": "P-1233",
+     "referring_clinic": "Yishun Family Clinic", "specialty": "DER",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Rapidly growing pigmented lesion on the back, "
+                         "worsening over days.",
+     "tests_attached": []},
+
+    # REF-6019 - duplicate_future_appointment in a NON-routine band. Every
+    # shipped/added duplicate case so far is routine; this one is urgent,
+    # same patient (P-1192) and specialty (ORT) as REF-6016/6017.
+    {"referral_id": "REF-6019", "patient_id": "P-1192",
+     "referring_clinic": "Clementi Medical", "specialty": "ORT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Acute onset severe knee pain following a twisting "
+                         "injury today, unable to bear weight.",
+     "tests_attached": ["XR-KNEE"], "tests_attached_on": "2026-09-09"},
+
+    # REF-6020 - a SECOND specialty_mismatch case, different specialty (ENT)
+    # than the shipped REF-5671 (OPH). One case testing a whole trigger is
+    # fragile.
+    {"referral_id": "REF-6020", "patient_id": "P-1241",
+     "referring_clinic": "Bedok Family Practice", "specialty": "ENT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Persistent facial rash and itching for three "
+                         "weeks, no other complaints.",
+     "tests_attached": []},
 ]
 
 

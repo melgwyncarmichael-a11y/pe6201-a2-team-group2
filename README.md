@@ -57,9 +57,10 @@ the measured comparison plan, are in `docs/HOW_IT_WORKS.pdf`.
 
 ## Status
 
-Scripted backend: **11 of 25 cases** have a script (`REF-5602` plus our 10
-additions) — the other 14 shipped cases still need one each. Those 11 produce
-**21 graded trials** (negative cases run 3×), all passing in both decision
-modes. Live battery, guardrail checklist (D3b), and the judgement check (D4)
-are not started — see the "what's still open" sections in `docs/DATA_NOTES.md`
+Scripted backend: **all 35 labelled cases** (15 shipped + 20 added) have a
+script and run for free. That's **81 graded trials** (negative cases run 3×),
+all passing, in both decision modes. Every label independently cross-checked
+against `resolve_routing`'s logic, not just checked for existence. Live
+battery, guardrail checklist (D3b), and the judgement check (D4) are not
+started — see the "what's still open" sections in `docs/DATA_NOTES.md`
 and the run guide.

@@ -667,6 +667,205 @@ SCRIPTS = {
          "thought": "The long ordinary run - compare its turn count with "
                     "REF-5620's."},
     ],
+
+    # ═══════════════════════════════════════════════════════════════
+    # SECOND BATCH OF ADDED CASES - boundary templates, an ordinary-act
+    # copy-base, and the four previously-unproven gate orderings. See
+    # docs/TEST_CASE_MAP.md.
+    # ═══════════════════════════════════════════════════════════════
+
+    "REF-6011": [
+        {"thought": "New specialty for me - RESP. Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6011"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "RESP",
+                                                "referral_id": "REF-6011"}),
+                   ("lookup_patient", {"patient_id": "P-1180"})]},
+        {"thought": "SPIRO-01 present, no red flag, right department, no "
+                    "duplicate. No urgency trigger - routine band, 8-week "
+                    "window to 2026-11-04.",
+         "calls": [("get_clinic_slots", {"specialty": "RESP", "band": "routine",
+                                         "from": "2026-09-09", "to": "2026-11-04"})]},
+        {"thought": "The only slot is dated 2026-11-04 - exactly the last "
+                    "legal day, and inside the window, not outside. Book it.",
+         "calls": [("book_slot", {"clinic": "RESP-C1", "date": "2026-11-04",
+                                  "time": "09:00", "referral_id": "REF-6011"})]},
+        {"final": {"decision": "book",
+                  "booked": {"clinic": "RESP-C1", "date": "2026-11-04", "time": "09:00"},
+                  "reason": "Routine band, 8-week window from as_of 2026-09-09 "
+                            "closing 2026-11-04. SPIRO-01 present, no red flag, "
+                            "no duplicate. The only available slot sits exactly "
+                            "on the last legal day and is still bookable."},
+         "thought": "Routine-band counterpart to REF-6002's soon-band boundary."},
+    ],
+
+    "REF-6012": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6012"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "RESP",
+                                                "referral_id": "REF-6012"}),
+                   ("lookup_patient", {"patient_id": "P-1227"})]},
+        {"thought": "'Progressive over weeks' - soon band, window closes "
+                    "2026-10-07. SPIRO-01 present, no red flag, no duplicate. "
+                    "Search the window before concluding anything.",
+         "calls": [("get_clinic_slots", {"specialty": "RESP", "band": "soon",
+                                         "from": "2026-09-09", "to": "2026-10-07"})]},
+        {"final": {"decision": "escalate", "trigger": "no_slot_in_window",
+                  "reason": "Soon band, 4-week window from as_of 2026-09-09 "
+                            "closing 2026-10-07. The search was performed - the "
+                            "only RESP soon slot is dated 2026-10-08, one day "
+                            "past the window, so it does not count."},
+         "thought": "Soon-band counterpart to REF-6003's urgent-band boundary."},
+    ],
+
+    "REF-6013": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6013"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "CARD",
+                                                "referral_id": "REF-6013"}),
+                   ("lookup_patient", {"patient_id": "P-1233"})]},
+        {"thought": "No red flag, right department, both CARD tests present, "
+                    "no duplicate, no urgency trigger - routine band, 8-week "
+                    "window to 2026-11-04.",
+         "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "routine",
+                                         "from": "2026-09-09", "to": "2026-11-04"})]},
+        {"thought": "First routine CARD slot is 2026-10-21. Book it.",
+         "calls": [("book_slot", {"clinic": "CARD-C2", "date": "2026-10-21",
+                                  "time": "10:00", "referral_id": "REF-6013"})]},
+        {"final": {"decision": "book",
+                  "booked": {"clinic": "CARD-C2", "date": "2026-10-21", "time": "10:00"},
+                  "reason": "Routine band, 8-week window from as_of 2026-09-09. "
+                            "ECG-12 and BNP-01 both present. No red flag, no "
+                            "duplicate."},
+         "thought": "Plain copy-base for the ordinary-act family - nothing "
+                    "special about this one on purpose."},
+    ],
+
+    "REF-6014": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6014"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "ORT",
+                                                "referral_id": "REF-6014"}),
+                   ("lookup_patient", {"patient_id": "P-1180"})]},
+        {"final": {"decision": "escalate", "trigger": "red_flag_term",
+                  "reason": "The red-flag terms 'saddle anaesthesia' and 'loss "
+                            "of bladder control' are present. The summary also "
+                            "names no ORT body word, which would separately "
+                            "trigger specialty_mismatch - but the red flag is "
+                            "checked first and stops the run before that "
+                            "matters."},
+         "thought": "Two gates could fire here. Gate 1 has to win, not just "
+                    "happen to be present."},
+    ],
+
+    "REF-6015": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6015"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "OPH",
+                                                "referral_id": "REF-6015"}),
+                   ("lookup_patient", {"patient_id": "P-1204"})]},
+        {"final": {"decision": "escalate", "trigger": "red_flag_term",
+                  "reason": "The red-flag term 'sudden visual loss' is "
+                            "present. P-1204 also holds a future OPH "
+                            "appointment (2026-10-02) that would separately "
+                            "trigger duplicate_future_appointment - but the "
+                            "red flag is checked first."},
+         "thought": "Gate 1 outranks gate 4, same patient's real duplicate "
+                    "from REF-5684 reused here."},
+    ],
+
+    "REF-6016": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6016"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "ORT",
+                                                "referral_id": "REF-6016"}),
+                   ("lookup_patient", {"patient_id": "P-1192"})]},
+        {"final": {"decision": "escalate", "trigger": "specialty_mismatch",
+                  "reason": "ORT was requested but the summary describes "
+                            "headaches and visual disturbance - no ORT body "
+                            "word appears. P-1192 also holds a future ORT "
+                            "appointment that would separately trigger "
+                            "duplicate_future_appointment - but wrong "
+                            "department is checked first."},
+         "thought": "Gate 2 outranks gate 4."},
+    ],
+
+    "REF-6017": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6017"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "ORT",
+                                                "referral_id": "REF-6017"}),
+                   ("lookup_patient", {"patient_id": "P-1192"})]},
+        {"final": {"decision": "request_information", "missing": "weight-bearing knee X-ray XR-KNEE",
+                  "reason": "No red flag, right department, but XR-KNEE is not "
+                            "attached. P-1192 also holds a future ORT "
+                            "appointment that would separately trigger "
+                            "duplicate_future_appointment - but the missing "
+                            "test is checked first, and the outcome is a "
+                            "request, not an escalation. No slot search."},
+         "thought": "Gate 3 outranks gate 4, and changes the OUTCOME TYPE, "
+                    "not just the trigger name."},
+    ],
+
+    "REF-6018": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6018"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "DER",
+                                                "referral_id": "REF-6018"}),
+                   ("lookup_patient", {"patient_id": "P-1233"})]},
+        {"final": {"decision": "escalate", "trigger": "red_flag_term",
+                  "reason": "The red-flag term 'rapidly growing pigmented "
+                            "lesion' is present. 'Worsening over days' also "
+                            "appears, which would otherwise set an urgent "
+                            "band - irrelevant, since the red flag escalates "
+                            "regardless of what band the text would compute "
+                            "to."},
+         "thought": "Every other red-flag case so far happens to be routine "
+                    "band. This one proves band doesn't matter once gate 1 "
+                    "fires."},
+    ],
+
+    "REF-6019": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6019"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "ORT",
+                                                "referral_id": "REF-6019"}),
+                   ("lookup_patient", {"patient_id": "P-1192"})]},
+        {"final": {"decision": "escalate", "trigger": "duplicate_future_appointment",
+                  "reason": "No red flag, right department, XR-KNEE present. "
+                            "P-1192 already holds an ORT appointment on "
+                            "2026-10-21 - in the future and in the same "
+                            "specialty. 'Acute onset' would otherwise set an "
+                            "urgent band, but the duplicate stops the run "
+                            "first; no slot search."},
+         "thought": "Every other duplicate case so far is routine band. This "
+                    "one proves the duplicate gate fires regardless of band."},
+    ],
+
+    "REF-6020": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6020"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "ENT",
+                                                "referral_id": "REF-6020"}),
+                   ("lookup_patient", {"patient_id": "P-1241"})]},
+        {"final": {"decision": "escalate", "trigger": "specialty_mismatch",
+                  "reason": "ENT was requested but the summary describes a "
+                            "facial rash and itching - no ENT body word "
+                            "appears. Wrong department; escalate to a triage "
+                            "nurse."},
+         "thought": "A second specialty_mismatch case, different specialty "
+                    "than the shipped REF-5671 - one case for a whole trigger "
+                    "was fragile."},
+    ],
 }
 
 

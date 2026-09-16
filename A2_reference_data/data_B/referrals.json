@@ -295,5 +295,117 @@
       "AUD-01"
     ],
     "tests_attached_on": "2026-09-03"
+  },
+  {
+    "referral_id": "REF-6011",
+    "patient_id": "P-1180",
+    "referring_clinic": "Clementi Medical",
+    "specialty": "RESP",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Chronic cough and wheeze for several months, worse at night. Query asthma. No blood in the sputum.",
+    "tests_attached": [
+      "SPIRO-01"
+    ],
+    "tests_attached_on": "2026-09-05"
+  },
+  {
+    "referral_id": "REF-6012",
+    "patient_id": "P-1227",
+    "referring_clinic": "Tampines Polyclinic",
+    "specialty": "RESP",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Persistent dry cough and breathlessness, progressive over weeks, not settling. Query interstitial lung disease.",
+    "tests_attached": [
+      "SPIRO-01"
+    ],
+    "tests_attached_on": "2026-09-06"
+  },
+  {
+    "referral_id": "REF-6013",
+    "patient_id": "P-1233",
+    "referring_clinic": "Bukit Timah Surgery",
+    "specialty": "CARD",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Stable exertional breathlessness for six months, no chest pain, no ankle swelling. Query ischaemic heart disease.",
+    "tests_attached": [
+      "ECG-12",
+      "BNP-01"
+    ],
+    "tests_attached_on": "2026-09-04"
+  },
+  {
+    "referral_id": "REF-6014",
+    "patient_id": "P-1180",
+    "referring_clinic": "Clementi Medical",
+    "specialty": "ORT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Sudden saddle anaesthesia and loss of bladder control noted on examination; no orthopaedic complaint volunteered.",
+    "tests_attached": [
+      "XR-KNEE"
+    ],
+    "tests_attached_on": "2026-09-08"
+  },
+  {
+    "referral_id": "REF-6015",
+    "patient_id": "P-1204",
+    "referring_clinic": "Bukit Timah Surgery",
+    "specialty": "OPH",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Sudden visual loss in the left eye since this morning, no pain.",
+    "tests_attached": [
+      "VF-01"
+    ],
+    "tests_attached_on": "2026-09-07"
+  },
+  {
+    "referral_id": "REF-6016",
+    "patient_id": "P-1192",
+    "referring_clinic": "Bedok Family Practice",
+    "specialty": "ORT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Persistent headaches with visual disturbance for two weeks, no other symptoms.",
+    "tests_attached": [
+      "XR-KNEE"
+    ],
+    "tests_attached_on": "2026-09-06"
+  },
+  {
+    "referral_id": "REF-6017",
+    "patient_id": "P-1192",
+    "referring_clinic": "Tampines Polyclinic",
+    "specialty": "ORT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Ongoing knee pain for three months following a fall.",
+    "tests_attached": []
+  },
+  {
+    "referral_id": "REF-6018",
+    "patient_id": "P-1233",
+    "referring_clinic": "Yishun Family Clinic",
+    "specialty": "DER",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Rapidly growing pigmented lesion on the back, worsening over days.",
+    "tests_attached": []
+  },
+  {
+    "referral_id": "REF-6019",
+    "patient_id": "P-1192",
+    "referring_clinic": "Clementi Medical",
+    "specialty": "ORT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Acute onset severe knee pain following a twisting injury today, unable to bear weight.",
+    "tests_attached": [
+      "XR-KNEE"
+    ],
+    "tests_attached_on": "2026-09-09"
+  },
+  {
+    "referral_id": "REF-6020",
+    "patient_id": "P-1241",
+    "referring_clinic": "Bedok Family Practice",
+    "specialty": "ENT",
+    "date_received": "2026-09-09",
+    "clinical_summary": "Persistent facial rash and itching for three weeks, no other complaints.",
+    "tests_attached": []
   }
 ]
