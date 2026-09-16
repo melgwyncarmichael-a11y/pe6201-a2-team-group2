@@ -1038,6 +1038,102 @@ SCRIPTS = {
                             "BNP-01 present, booked inside window."},
          "thought": "Urgent CARD booking successful."},
     ],
+
+     "REF-6031": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6031"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "CARD",
+                                                "referral_id": "REF-6031"}),
+                   ("lookup_patient", {"patient_id": "P-1180"})]},
+        {"final": {"decision": "request_information",
+                   "missing": "serum BNP BNP-01",
+                   "reason": "The phrase 'worsening over days' sets the urgent "
+                             "band and a 2-week window. CARD requires both ECG-12 "
+                             "and BNP-01. ECG-12 was received, but serum BNP "
+                             "BNP-01 is missing. The referral is incomplete, so "
+                             "request the missing test before any slot search."},
+         "thought": "Urgent status does not bypass the mandatory-test gate. "
+                    "Name BNP-01 specifically and stop before searching slots."},
+    ],
+
+    "REF-6032": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6032"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "OPH",
+                                                "referral_id": "REF-6032"}),
+                   ("lookup_patient", {"patient_id": "P-1233"})]},
+        {"final": {"decision": "escalate",
+                   "trigger": "red_flag_term",
+                   "reason": "The OPH red-flag term 'flashes and floaters' is "
+                             "present. 'Worsening over days' also sets the urgent "
+                             "band, and VF-01 is attached, but neither overrides "
+                             "the red flag. Escalate to a triage nurse rather "
+                             "than booking an urgent slot."},
+         "thought": "Gate 1 fires first. Urgent status means faster booking only "
+                    "when the safety gates are otherwise clear."},
+    ],
+
+    "REF-6033": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6033"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "OPH",
+                                                "referral_id": "REF-6033"}),
+                   ("lookup_patient", {"patient_id": "P-1204"})]},
+        {"final": {"decision": "escalate",
+                   "trigger": "duplicate_future_appointment",
+                   "reason": "The phrase 'progressive over weeks' sets the soon "
+                             "band. No red flag is present, the department is "
+                             "correct and VF-01 is attached. However, P-1204 "
+                             "already has an OPH appointment on 2026-10-02, "
+                             "which is in the future and in the same specialty. "
+                             "Escalate instead of creating a duplicate booking."},
+         "thought": "The first three gates are clear, but Gate 4 detects the "
+                    "future same-specialty appointment. No slot search is needed."},
+    ],
+
+    "REF-6034": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6034"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "ORT",
+                                                "referral_id": "REF-6034"}),
+                   ("lookup_patient", {"patient_id": "P-1241"})]},
+        {"final": {"decision": "escalate",
+                   "trigger": "specialty_mismatch",
+                   "reason": "ORT was requested, but the clinical summary "
+                             "describes palpitations, breathlessness and a query "
+                             "cardiac arrhythmia, which is a cardiac rather than "
+                             "Orthopaedic problem. 'Progressive over weeks' sets "
+                             "the soon band. XR-KNEE is attached, so missing "
+                             "evidence is not the reason for escalation. "
+                             "Escalate for specialty mismatch."},
+         "thought": "Gate 2 fires because the clinical problem does not match "
+                    "the requested specialty. The later test and duplicate gates "
+                    "must not determine the outcome."},
+    ],
+
+    "REF-6035": [
+        {"thought": "Fetch the referral.",
+         "calls": [("get_referral", {"referral_id": "REF-6035"})]},
+        {"thought": "Criteria and patient, batched.",
+         "calls": [("check_referral_criteria", {"specialty": "OPH",
+                                                "referral_id": "REF-6035"}),
+                   ("lookup_patient", {"patient_id": "P-1204"})]},
+        {"final": {"decision": "escalate",
+                   "trigger": "red_flag_term",
+                   "reason": "The OPH red-flag term 'sudden visual loss' is "
+                             "present. P-1204 also has a future OPH appointment "
+                             "on 2026-10-02, so a duplicate condition exists as "
+                             "well. However, Gate 1 red flag is checked before "
+                             "Gate 4 duplicate and must determine the outcome. "
+                             "Escalate immediately for the red flag."},
+         "thought": "This case deliberately has two possible triggers. "
+                    "Red flag comes first in the routing order and therefore "
+                    "outranks the future duplicate."},
+    ],
     
 }
 
