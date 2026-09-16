@@ -731,8 +731,54 @@ EXTRA_REFERRALS = [
      "clinical_summary": "Persistent facial rash and itching for three "
                          "weeks, no other complaints.",
      "tests_attached": []},
-]
 
+    # REF-6021 - ordinary routine booking using existing RESP routine slot
+    # (RESP-C1, 2026-11-04), expanding the ordinary act evaluation base.
+    {"referral_id": "REF-6021", "patient_id": "P-1180",
+     "referring_clinic": "Clementi Medical", "specialty": "RESP",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Mild intermittent wheeze over recent weeks, no acute "
+                         "distress, query mild asthma.",
+     "tests_attached": ["SPIRO-01"], "tests_attached_on": "2026-09-06"},
+
+    # REF-6022 - "soon" band booking: uses the soon slot for OPH (OPH-C3, 
+    # 2026-09-29), which safely falls inside the 4-week soon window.
+    {"referral_id": "REF-6022", "patient_id": "P-1227",
+     "referring_clinic": "Tampines Polyclinic", "specialty": "OPH",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Progressive blurring of vision over weeks, not "
+                         "responding to current corrective lenses. Query cataract.",
+     "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-04"},
+
+    # REF-6023 - named ask: Cardiology referral missing one of its two 
+     # mandatory tests (has ECG-12, missing serum BNP-01).
+    {"referral_id": "REF-6023", "patient_id": "P-1241",
+     "referring_clinic": "Bedok Family Practice", "specialty": "CARD",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Shortness of breath on moderate exertion, stable at "
+                         "rest. Query mild left ventricular dysfunction.",
+     "tests_attached": ["ECG-12"], "tests_attached_on": "2026-09-05"},
+
+    # REF-6024 - boundary/no slot: complete urgent Orthopaedics referral, but 
+    # the only urgent slot is too late or doesn't meet window requirements, 
+    # forcing an escalation for no_slot_in_window.
+    {"referral_id": "REF-6024", "patient_id": "P-1233",
+     "referring_clinic": "Yishun Family Clinic", "specialty": "ORT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Severe acute knee locking and pain, worsening over days, "
+                         "requiring urgent orthopaedic review.",
+     "tests_attached": ["XR-KNEE"], "tests_attached_on": "2026-09-08"},
+
+    # REF-6025 - NEGATIVE CASE: contains a severe red-flag term ("crushing chest pain") 
+     # under Cardiology, which must immediately trigger an escalation to the triage nurse 
+     # regardless of other clean parameters.
+    {"referral_id": "REF-6025", "patient_id": "P-1192",
+     "referring_clinic": "Bukit Timah Surgery", "specialty": "CARD",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Crushing chest pain radiating to the left arm starting "
+                         "earlier this morning. Urgent evaluation needed.",
+     "tests_attached": ["ECG-12", "BNP-01"], "tests_attached_on": "2026-09-09"},
+]
 
 def write():
     os.makedirs(OUT, exist_ok=True)
