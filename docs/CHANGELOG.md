@@ -7,6 +7,58 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-17 — Three teammate-added cases (`REF-6023`, `REF-6027`, `REF-6030`) mislabelled by a synonym gap
+
+**Found by:** the independent `resolve_routing` cross-check this repo runs
+against every label (not just `check_my_data.py`'s existence check) — see
+`docs/TEST_CASE_MAP.md` / `docs/DATA_NOTES.md` for the method.
+
+**The bug:** all three referrals described a cardiology complaint as
+*"shortness of breath"* or *"dyspnea"* — clinically identical to
+`"breathlessness"`, but not the literal substring `check_referral_criteria`
+matches against CARD's `treats` list. So `right_department` came back
+`False`, and each case actually resolved to `escalate`/`specialty_mismatch`
+**before** it ever reached the check the case was written to test:
+
+- `REF-6023` — labelled `request_information`/BNP-01; actually resolved to
+  `escalate`/`specialty_mismatch`.
+- `REF-6027` — same root cause, same actual resolution.
+- `REF-6030` — labelled `book`; actually resolved to
+  `escalate`/`specialty_mismatch`. This one visibly failed the code check
+  (`117/118`) because its script tries `book_slot`, which the
+  route-consistency guardrail correctly blocked — the guardrail doing
+  exactly its job, not a separate bug.
+
+**A second, independent bug found on `REF-6030` while fixing the first:**
+its script called `lookup_patient` with `patient_id: "P-1233"`, but the
+referral's actual `patient_id` is `P-1215`. The scripted backend doesn't
+cross-check that a call's arguments match the referral it's for, so this
+ran without erroring — it just quietly looked up the wrong patient. Didn't
+change this case's outcome (neither patient has a conflicting appointment),
+but the decision record would have cited the wrong patient's duplicate
+check.
+
+**The fix:**
+- `make_fixtures_B.py` — replaced "shortness of breath"/"dyspnea" with
+  "breathlessness" in all three `clinical_summary` fields. No other change
+  to the referrals (specialty, tests, patient, dates all untouched).
+- `backends.py` (`REF-6030`) — corrected `lookup_patient`'s `patient_id` to
+  `P-1215`, and updated its `reason`/`thought` text: the actual matching
+  urgency trigger is `"rapidly worsening"`, not `"worsening over days"`
+  (both are valid urgent-band triggers in the text, but only one is
+  actually present — the label had cited the wrong one).
+- `expected_outcomes_B.json` — same trigger-wording correction in
+  `REF-6030`'s `must_record`.
+
+**Verified:**
+- `check_my_data.py` → "Your data hangs together."
+- Independent `resolve_routing` cross-check, all 50 labelled cases:
+  **0 mismatches** (was 3).
+- `run_eval.py --mode rules` and `--mode model`, full set:
+  **118/118 trials, 100%**, both modes (was 117/118).
+
+---
+
 ## 2026-09-17 — Autonomy gate silently auto-approved on the live backend
 
 **Reported by:** the guardrails owner, reviewing `agent.py` while building

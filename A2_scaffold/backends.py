@@ -1023,8 +1023,8 @@ SCRIPTS = {
         {"thought": "Criteria and patient, batched.",
          "calls": [("check_referral_criteria", {"specialty": "CARD",
                                                 "referral_id": "REF-6030"}),
-                   ("lookup_patient", {"patient_id": "P-1233"})]},
-        {"thought": "'Worsening over days' sets urgent band - 2-week window "
+                   ("lookup_patient", {"patient_id": "P-1215"})]},
+        {"thought": "'Rapidly worsening' sets urgent band - 2-week window "
                     "closing 2026-09-23. Both ECG-12 and BNP-01 present, no duplicate.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "urgent",
                                          "from": "2026-09-09", "to": "2026-09-23"})]},
@@ -1033,7 +1033,7 @@ SCRIPTS = {
                                   "time": "08:30", "referral_id": "REF-6030"})]},
         {"final": {"decision": "book",
                   "booked": {"clinic": "CARD-C1", "date": "2026-09-16", "time": "08:30"},
-                  "reason": "Urgency band urgent set by 'worsening over days'. "
+                  "reason": "Urgency band urgent set by 'rapidly worsening'. "
                             "2-week window from as_of 2026-09-09. Both ECG-12 and "
                             "BNP-01 present, booked inside window."},
          "thought": "Urgent CARD booking successful."},

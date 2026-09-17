@@ -547,7 +547,7 @@
     },
     "family": "urgent_booking",
     "must_record": [
-      "urgency band urgent set by \"worsening over days\"",
+      "urgency band urgent set by \"rapidly worsening\"",
       "the 2-week window",
       "ECG-12 and BNP-01 both present"
     ],
