@@ -189,7 +189,11 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
                   "reason": "halted by the %s guardrail - %s"
                             % (stop.reason, stop.detail)}
 
-    cost = (tokens_in / 1e6) * config.PRICE_IN + (tokens_out / 1e6) * config.PRICE_OUT
+    # Priced by whichever MODEL is actually configured, not a flat rate -
+    # see config.PRICES. Scripted runs still use config.MODEL's price even
+    # though no live call happened, exactly as before this change.
+    price_in, price_out = config.price_for(config.MODEL)
+    cost = (tokens_in / 1e6) * price_in + (tokens_out / 1e6) * price_out
 
     record.update({
         "case_id": case_id,

@@ -1188,19 +1188,32 @@ class LiveBackend:
         self.case_id = case_id
         self.tools = tool_descriptors
         self.system_prompt = system_prompt
+        # (prompt_tokens, completion_tokens) from the most recent call,
+        # straight from OpenRouter's own `usage` field - see next_move()
+        # and token_estimate() below. Starts at (0, 0) only for the case
+        # where next_move() has not run yet.
+        self._last_usage = (0, 0)
 
     def next_move(self, transcript):
         messages = [{"role": "system", "content": self.system_prompt}]
         for entry in transcript:
             messages.append({"role": entry["role"], "content": entry["content"]})
-        raw = _live_call(messages)
+        raw, usage = _live_call(messages)
+        self._last_usage = usage
         return _parse_move(raw)
 
-    @staticmethod
-    def token_estimate(transcript):
-        # Replace with the usage numbers the API returns. Estimating here
-        # and calling it measured is the mistake D6 punishes.
-        return 0, 0
+    def token_estimate(self, transcript):
+        """MEASURED, not estimated, despite the method name kept for
+        interface parity with ScriptedBackend. Returns the usage numbers
+        OpenRouter reported for the call next_move() just made - agent.py
+        always calls next_move() before this, so it's never stale.
+
+        If a provider omits `usage` from its response (some do, for some
+        models), this returns (0, 0) rather than guessing - a visible zero
+        is honest; a guessed number reported as measured is the mistake
+        D6 punishes.
+        """
+        return self._last_usage
 
 
 def _parse_move(text):
@@ -1220,6 +1233,11 @@ def _live_call(messages):
     Everything else speaks in terms of moves and transcripts. Swapping
     vendor means rewriting this one function, and changing MODEL and
     BASE_URL in config.py. Nothing else.
+
+    RETURNS (content, (prompt_tokens, completion_tokens)) - the usage pair
+    is what makes D6's cost numbers measured rather than estimated. It
+    comes straight from the API response's own `usage` field; this
+    function never counts or guesses tokens itself.
     """
     if not config.API_KEY:
         raise SystemExit(
@@ -1238,7 +1256,9 @@ def _live_call(messages):
                  "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=60) as r:
         payload = json.load(r)
-    return payload["choices"][0]["message"]["content"]
+    content = payload["choices"][0]["message"]["content"]
+    usage = payload.get("usage") or {}
+    return content, (usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0))
 
 
 def make_backend(case_id, tool_descriptors=None, system_prompt=""):

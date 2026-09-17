@@ -7,6 +7,62 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-17 — Live-run cost was unmeasurable; per-model pricing was flat
+
+**Why this was checked now:** before anyone spends real API budget on the
+D5(b) live battery, worth confirming the numbers that come back are
+actually trustworthy - latency and cost specifically.
+
+**Latency: already fine.** `agent.py` records real wall-clock `seconds`
+per run (`time.time()` at start and end). For a live call this is genuine
+API latency. No change needed.
+
+**Cost: two separate problems, both real.**
+
+1. `LiveBackend.token_estimate()` was still the scaffold's stub, returning
+   `(0, 0)` unconditionally. Every live run would have reported
+   `tokens_in=0, tokens_out=0, cost_usd=$0.00` regardless of actual spend -
+   the scripted backend's fake estimator was harmless (its numbers were
+   never claimed as measured), but this one would have silently looked
+   like a real, trustworthy zero.
+2. `config.PRICE_IN`/`PRICE_OUT` was one flat rate, always the cheap
+   tier's price, regardless of `config.MODEL`. Six team members are each
+   about to set `MODEL` to something different for their battery slot -
+   this would have silently priced 5 of 6 people's runs at the wrong
+   tier's rate.
+
+**The fix:**
+- `backends.py` — `_live_call()` now returns the OpenRouter response's own
+  `usage` field (`prompt_tokens`, `completion_tokens`) alongside the
+  content, instead of discarding it. `LiveBackend` stores the most recent
+  call's usage and `token_estimate()` returns it - measured, not
+  estimated, from the API's own accounting.
+- `config.py` — `PRICE_IN`/`PRICE_OUT` replaced with a `PRICES` dict keyed
+  by model name, and a `price_for(model)` lookup that **fails loudly**
+  (`SystemExit`, not a silent wrong number) if a model's price hasn't been
+  entered yet. Whoever sets `MODEL` for their battery slot must add its
+  price pair to `PRICES` first, or the run refuses to proceed.
+- `agent.py` — cost is now computed from `config.price_for(config.MODEL)`
+  instead of the flat rate.
+
+**Verified:**
+- Scripted set, both modes, unaffected: **118/118, 100%** (unchanged -
+  `config.MODEL`'s default stays priced, so nothing about the existing
+  scripted runs changed).
+- `config.price_for()` on an unlisted model raises immediately with
+  instructions, rather than silently defaulting.
+- Mocked a full live run (`REF-5620`, five turns of realistic OpenRouter
+  `usage` numbers, no real key/network needed to prove the wiring):
+  `tokens_in`/`tokens_out` matched the sum of the mocked usage exactly, and
+  `cost_usd` matched the hand-computed expected cost exactly.
+
+**Still needed before the live battery actually runs:** each member adds
+their model's real price pair (input and output, checked against
+OpenRouter's own pricing page) to `config.PRICES` before running their
+slot.
+
+---
+
 ## 2026-09-17 — Three teammate-added cases (`REF-6023`, `REF-6027`, `REF-6030`) mislabelled by a synonym gap
 
 **Found by:** the independent `resolve_routing` cross-check this repo runs

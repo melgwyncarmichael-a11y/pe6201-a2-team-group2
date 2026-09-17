@@ -116,12 +116,38 @@ def data_root():
 
 
 # ─────────────────────────────────────────────────────────────────────
-# PRICES, US dollars per MILLION tokens. Section 7 of the brief.
-# Checked against vendor pages 28 August 2026. RE-CHECK THEM: quoting a
-# price you did not verify is the kind of thing D6 is marked on.
+# PRICES, US dollars per MILLION tokens, KEYED BY MODEL. Section 7 of the
+# brief. Checked against vendor pages 28 August 2026. RE-CHECK THEM before
+# you run: quoting a price you did not verify is what D6 is marked on.
+#
+# Six team members will each set MODEL to something different for their
+# own live-battery slot. A single flat PRICE_IN/PRICE_OUT pair silently
+# priced every model at the cheap tier's rate - wrong for 5 of 6 people.
+# Add your model's price pair here BEFORE running your battery slot;
+# price_for() below fails loudly rather than guessing if it's missing.
 # ─────────────────────────────────────────────────────────────────────
-PRICE_IN = 0.10
-PRICE_OUT = 0.40
+PRICES = {
+    "openai/gpt-4o-mini": (0.10, 0.40),   # (price_in, price_out) per 1M tokens
+    # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
+}
+
+
+def price_for(model):
+    """(price_in, price_out) per million tokens for MODEL.
+
+    Fails LOUDLY with instructions rather than silently reusing another
+    model's price - the same discipline as data_root() above. A wrong
+    price here is a wrong D6 number that looks exactly like a right one.
+    """
+    if model not in PRICES:
+        raise SystemExit(
+            "\n  No price entered for MODEL %r in config.PRICES.\n"
+            "  Copy the price PER MILLION TOKENS from OpenRouter's own\n"
+            "  model page - input and output are usually different - and\n"
+            "  add it as its own entry. Do not reuse another model's price\n"
+            "  or guess; that is exactly the mistake D6 is marked on.\n"
+            % model)
+    return PRICES[model]
 
 
 def _stale_bytecode_warning():
