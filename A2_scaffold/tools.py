@@ -630,203 +630,111 @@ DESCRIPTORS = {
     # ---- Problem B -------------------------------------------------
     "get_referral": {
         "name": "get_referral",
-        "purpose": "Fetch the referral you have been asked to handle.",
-        "when": "Turn 1, alone. Everything else needs what it returns, so "
-                "nothing can be run alongside it.",
-        "args": {"referral_id": "str, the case id you were given"},
-        "returns": "{referral_id, patient_id, referring_clinic, specialty, "
-                   "date_received, clinical_summary, tests_attached, "
-                   "tests_attached_on (may be absent)}",
-        "failure": "Returns None when no referral has that id. That is a "
-                   "broken case, not an outcome - stop and say so rather "
-                   "than inventing a decision.",
+        "purpose": "Fetch referral details.",
+        "when": "Turn 1 only.",
+        "args": {"referral_id": "str, case ID"},
+        "returns": "{referral_id, patient_id, referring_clinic, specialty, date_received, clinical_summary, tests_attached, tests_attached_on}",
+        "failure": "Returns None if ID invalid. Stop run if missing."
     },
     "lookup_patient": {
         "name": "lookup_patient",
-        "purpose": "The patient's existing appointments and how to contact them.",
-        "when": "Any time after get_referral. Independent of the criteria "
-                "check, so the two can go in one turn.",
-        "args": {"patient_id": "str, from the referral"},
-        "returns": "{patient: {patient_id, date_of_birth, "
-                   "existing_appointments[]}, contact: {method, value}}",
-        "failure": "Returns None when the patient does not exist - a broken "
-                   "case. An EMPTY existing_appointments list is normal and "
-                   "means nothing is booked, which is not the same thing.",
+        "purpose": "Fetch patient info and existing appointments.",
+        "when": "After get_referral (can batch with criteria check).",
+        "args": {"patient_id": "str, from referral"},
+        "returns": "{patient: {patient_id, date_of_birth, existing_appointments[]}, contact: {method, value}}",
+        "failure": "Returns None if patient missing. Empty existing_appointments is normal."
     },
     "check_referral_criteria": {
         "name": "check_referral_criteria",
-        "purpose": "Run the department's protocol against the referral's free "
-                   "text: red flags, right department, mandatory tests, band.",
-        "when": "Immediately after get_referral. Its answers decide whether "
-                "the run continues at all.",
-        "args": {"specialty": "str, the code on the referral",
-                 "referral_id": "str, the case id"},
-        "returns": "{red_flag_term (str or None), right_department (bool), "
-                   "missing_tests (list), band, window_weeks}",
-        "failure": "Returns None when the referral or specialty does not "
-                   "exist. IT DECIDES NOTHING - it reports five facts. Apply "
-                   "them in order: red flag, then wrong department, then "
-                   "missing test, then duplicate. STOP at the first that "
-                   "fires. band 'routine' is the default when no trigger "
-                   "phrase appears; that is normal, not a failure.",
+        "purpose": "Evaluate referral against protocol (red flags, department, missing tests, band).",
+        "when": "Immediately after get_referral.",
+        "args": {"specialty": "str, referral code", "referral_id": "str, case ID"},
+        "returns": "{red_flag_term, right_department, missing_tests, band, window_weeks}",
+        "failure": "Returns None if not found. Reports facts only; does not derive decision. Default band is 'routine'."
     },
     "book_slot": {
         "name": "book_slot",
-        "purpose": "Commit the appointment. THE IRREVERSIBLE STEP.",
-        "when": "Last, and only when all four checks passed and a legal slot "
-                "was found. Never speculatively.",
-        "args": {"clinic": "str, from the chosen slot",
-                 "date": "str, from the chosen slot",
-                 "time": "str, from the chosen slot",
-                 "referral_id": "str, the case id"},
+        "purpose": "Commit appointment slot (Irreversible).",
+        "when": "Last step only, after all checks pass and valid slot found.",
+        "args": {"clinic": "str", "date": "str", "time": "str", "referral_id": "str"},
         "returns": "{booked: true, clinic, date, time, referral_id}",
-        "failure": "This call is GATED: it may be held for human approval "
-                   "depending on the autonomy setting. If it is held, that is "
-                   "the correct outcome and not an error - report that the "
-                   "booking awaits approval, and name the slot you would take.",
+        "failure": "GATED. May require human approval depending on autonomy setting. Held state is a valid outcome."
     },
     "as_of": {
         "name": "as_of",
-        "purpose": "The date every urgency window is measured FROM.",
-        "when": "Before computing any window. Cheap - call it rather than "
-                "assuming.",
+        "purpose": "Get reference date for window calculations.",
+        "when": "Before window calculation.",
         "args": {},
-        "returns": "a date string, e.g. '2026-09-09'",
-        "failure": "Never fails. WATCH OUT: windows are counted from THIS, "
-                   "not from the referral's date_received. They are equal on "
-                   "some referrals and not on others.",
+        "returns": "date string ('YYYY-MM-DD')",
+        "failure": "Never fails. Windows count from this date."
+    },
+    "get_clinic_slots": {
+        "name": "get_clinic_slots",
+        "purpose": "Find open clinic slots for specialty and band within date window.",
+        "when": "AFTER criteria/patient gates pass.",
+        "args": {"specialty": "str, e.g. 'OPH'", "band": "str, REQUIRED (urgent|soon|routine)", "from/to": "str dates from as_of()"},
+        "returns": "list of {clinic, specialty, band, date, time, capacity_remaining}",
+        "failure": "Returns [] if no slot. Escalates to 'no_slot_in_window'. Do NOT expand window or alter band."
     },
 
     # ---- Problem A -------------------------------------------------
     "get_claim": {
         "name": "get_claim",
-        "purpose": "Fetch the claim you have been asked to decide.",
-        "when": "Turn 1, alone. Everything else needs the member, hospital "
-                "and line items it returns.",
-        "args": {"claim_id": "str, the case id you were given"},
-        "returns": "{claim_id, member_id, hospital_id, date_of_service, "
-                   "narrative, documents[], lines[{code, amount}]}",
-        "failure": "Returns None when no claim has that id - a broken case. "
-                   "NOTE lines is a LIST: every line needs its own coverage "
-                   "check and its own disposition.",
+        "purpose": "Fetch claim details.",
+        "when": "Turn 1 only.",
+        "args": {"claim_id": "str, case ID"},
+        "returns": "{claim_id, member_id, hospital_id, date_of_service, narrative, documents[], lines[{code, amount}]}",
+        "failure": "Returns None if ID invalid. Check every line item."
     },
     "lookup_policy": {
         "name": "lookup_policy",
-        "purpose": "The member's policy, and how much of the annual limit is "
-                   "left.",
-        "when": "After get_claim. Independent of the coverage checks and the "
-                "hospital lookup, so all of them fit in one turn.",
-        "args": {"member_id": "str, from the claim"},
-        "returns": "{member: {...}, policy: {status, start_date, end_date, "
-                   "annual_limit, used_to_date, exclusions[]}, remaining: int}",
-        "failure": "Returns None when the member or policy does not exist. "
-                   "USE `remaining`, not annual_limit - it is the limit minus "
-                   "what is already spent. Three separate escalation reasons "
-                   "live here: lapsed status, a date of service outside "
-                   "start_date..end_date EVEN IF status is active, and lines "
-                   "exceeding `remaining`.",
+        "purpose": "Fetch member policy and remaining limit.",
+        "when": "After get_claim.",
+        "args": {"member_id": "str"},
+        "returns": "{member: {...}, policy: {status, start_date, end_date, annual_limit, used_to_date, exclusions[]}, remaining: int}",
+        "failure": "Returns None if missing. Use `remaining`, not annual_limit."
     },
     "lookup_hospital": {
         "name": "lookup_hospital",
-        "purpose": "Whether the hospital is on the insurer's panel.",
-        "when": "After get_claim, alongside the other independent lookups.",
-        "args": {"hospital_id": "str, from the claim"},
+        "purpose": "Check hospital panel status.",
+        "when": "After get_claim.",
+        "args": {"hospital_id": "str"},
         "returns": "{hospital_id, name, panel (bool), country}",
-        "failure": "Returns None when the hospital does not exist. panel "
-                   "false does NOT decide the claim - it changes what the "
-                   "record must SAY, not what the decision is. Record it "
-                   "either way.",
+        "failure": "Returns None if missing. panel=false changes phrasing, not decision."
     },
     "check_coverage": {
         "name": "check_coverage",
-        "purpose": "Whether ONE procedure code is payable under ONE policy.",
-        "when": "ONCE PER LINE. A three-line claim needs three calls, and "
-                "they are independent, so they belong in the same turn.",
-        "args": {"code": "str, one line's procedure code",
-                 "policy_id": "str, REQUIRED, from lookup_policy"},
-        "returns": "{code, description, requires_preauth (bool), excluded "
-                   "(bool), exclusion_rule (str or None)}",
-        "failure": "Returns None when the code or policy does not exist. TWO "
-                   "FIELDS DRIVE WHAT HAPPENS NEXT: requires_preauth true "
-                   "means look for an approval, false means do not. excluded "
-                   "refuses THAT LINE, not the claim - cite exclusion_rule by "
-                   "name, and keep deciding the other lines.",
+        "purpose": "Check if procedure code is payable under policy.",
+        "when": "ONCE PER LINE in same turn.",
+        "args": {"code": "str", "policy_id": "str, REQUIRED"},
+        "returns": "{code, description, requires_preauth (bool), excluded (bool), exclusion_rule}",
+        "failure": "Returns None if invalid. requires_preauth drives preauth check; excluded refuses only that line."
     },
     "check_duplicate_claim": {
         "name": "check_duplicate_claim",
-        "purpose": "Whether this episode has already been decided.",
-        "when": "Before issuing any decision.",
-        "args": {"member_id": "str, from the claim",
-                 "hospital_id": "str, from the claim",
-                 "date_of_service": "str, from the claim",
-                 "lines": "the claim's lines list, unchanged"},
-        "returns": "the prior decided claim, or None",
-        "failure": "Returns None when nothing matches - the normal case, "
-                   "carry on. MATCH ON ALL FOUR FACTS. The claim id is NOT "
-                   "one of them: a resubmission arrives with a new id. The "
-                   "history contains near-misses that differ on exactly one "
-                   "fact each, so any shortcut match wrongly escalates a "
-                   "perfectly good claim.",
+        "purpose": "Check if episode was already decided.",
+        "when": "Before decision.",
+        "args": {"member_id": "str", "hospital_id": "str", "date_of_service": "str", "lines": "list"},
+        "returns": "prior decision row, or None",
+        "failure": "Returns None if clean. Match ALL FOUR facts."
     },
     "issue_decision_letter": {
         "name": "issue_decision_letter",
-        "purpose": "Send the decision to the member. THE IRREVERSIBLE STEP.",
-        "when": "Last, once every line has a disposition.",
-        "args": {"claim_id": "str, the case id",
-                 "decision": "str, one of the three outcomes",
-                 "lines_resolved": "int, how many lines you actually decided",
-                 "approved_total": "int, dollars approved",
-                 "refused_total": "int, dollars refused (default 0)"},
-        "returns": "{sent: true, claim_id, decision, lines_resolved, "
-                   "approved_total, refused_total}",
-        "failure": "This call is GATED and may be held for human approval. "
-                   "If held, that is the correct outcome, not an error. "
-                   "lines_resolved must equal the number of lines on the "
-                   "claim - if it does not, you have not finished.",
-    },
-
-    "get_clinic_slots": {
-        "name": "get_clinic_slots",
-        "purpose": "Find appointment slots that actually exist and are free, "
-                   "for one specialty in one urgency band inside a date window.",
-        "when": "AFTER all four gates pass. Never before - a red flag or a "
-                "missing mandatory test ends the run and a slot query at that "
-                "point is a wasted call and a wrong record.",
-        "args": {
-            "specialty": "str, the code from the referral, e.g. 'OPH'",
-            "band": "str, REQUIRED, one of urgent|soon|routine, from "
-                    "check_referral_criteria - not your own judgement",
-            "from/to": "str dates, the window measured from as_of()",
-        },
-        "returns": "list of {clinic, specialty, band, date, time, "
-                   "capacity_remaining}, only rows with capacity above zero",
-        "failure": "Returns an EMPTY LIST when nothing is free in that window. "
-                   "Empty means escalate - 'no slot in window' - and it does "
-                   "NOT mean widen the window or drop the band. A slot with "
-                   "capacity_remaining 0 exists and is full; that is a "
-                   "different fact from a slot not existing, and neither is a "
-                   "reason to book outside the band.",
+        "purpose": "Send decision to member (Irreversible).",
+        "when": "Last step, after all lines decided.",
+        "args": {"claim_id": "str", "decision": "str", "lines_resolved": "int", "approved_total": "int", "refused_total": "int"},
+        "returns": "{sent: true, claim_id, decision, lines_resolved, approved_total, refused_total}",
+        "failure": "GATED. lines_resolved must equal total claim lines."
     },
     "get_preauthorisation": {
         "name": "get_preauthorisation",
-        "purpose": "Find a pre-authorisation covering one member for one "
-                   "procedure on one date.",
-        "when": "ONLY when check_coverage said requires_preauth is true. "
-                "Calling it for every line means you did not read the flag.",
-        "args": {
-            "member_id": "str, from the claim",
-            "procedure_code": "str, the line's code",
-            "date_of_service": "str date, from the claim - the approval must "
-                               "be valid ON this date",
-        },
-        "returns": "{preauth_id, member_id, procedure_code, valid_from, "
-                   "valid_to} or None",
-        "failure": "Returns None when no approval exists OR when one exists "
-                   "but had expired before the date of service. NONE DOES NOT "
-                   "MEAN UNCOVERED. It means the evidence is missing, which is "
-                   "a REQUEST for the reference - naming the code and the date "
-                   "- not a refusal. Deciding otherwise fails the case.",
+        "purpose": "Find pre-authorisation for member/procedure/date.",
+        "when": "ONLY when requires_preauth=true.",
+        "args": {"member_id": "str", "procedure_code": "str", "date_of_service": "str"},
+        "returns": "{preauth_id, member_id, procedure_code, valid_from, valid_to} or None",
+        "failure": "None means missing evidence -> REQUEST INFO, NOT UNCOVERED."
     },
+#Streamlined DESCRIPTORS in tools.py to reduce Base Prefix size (B) from 1,451 to 1,033 tokens.
 }
 
 
