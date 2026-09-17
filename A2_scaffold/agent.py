@@ -74,10 +74,16 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
     tokens_in = tokens_out = 0
     stopped_by = None
 
-    # On the scripted backend the gate auto-approves so the run stays
+    # On the scripted backend ONLY, the gate auto-approves so the run stays
     # deterministic. The RECORD still shows the gate was reached and
-    # passed, which is what a marker looks for.
-    if approve is None:
+    # passed, which is what a marker looks for. On the live backend, a
+    # missing approval callback must NOT auto-approve - guardrails.gate()
+    # already fails closed on approve=None (bool(None and ...) is False),
+    # so leaving it None here is enough to correctly hold the booking. This
+    # used to auto-approve unconditionally, which silently defeated the
+    # "confirm" autonomy setting the moment BACKEND="live" - see
+    # docs/CHANGELOG.md.
+    if approve is None and backend.name == "scripted":
         approve = lambda action, payload: True
 
     try:

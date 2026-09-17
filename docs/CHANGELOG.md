@@ -1,0 +1,77 @@
+# Changelog
+
+Notable code-level fixes and why they happened — separate from
+`DATA_NOTES.md` (which tracks fixture/eval-case changes). One entry per
+reported issue: who found it, what was actually wrong, what changed, how it
+was verified. Newest first.
+
+---
+
+## 2026-09-17 — Autonomy gate silently auto-approved on the live backend
+
+**Reported by:** the guardrails owner, reviewing `agent.py` while building
+the D3(b) guardrail checklist (13 tests passing at the time of report).
+
+**The report:** `agent.py`'s comment said the auto-approval fallback was
+"for the scripted backend," but the code applied it unconditionally:
+
+```python
+if approve is None:
+    approve = lambda action, payload: True
+```
+
+Since `harness.py`/`run_eval.py` never pass an `approve` callback at all,
+*every* run - scripted or live - hit this fallback. In `AUTONOMY="confirm"`
+mode, that meant a live run with no approval wiring would silently auto-book
+instead of holding, defeating the whole point of the confirm gate.
+
+**Verified before changing anything:**
+- `guardrails.py`'s `gate()` already fails closed on its own -
+  `bool(approve and approve(...))` is `False` when `approve is None`. No
+  change needed there.
+- The *only* thing causing the bypass was `agent.py`'s override turning
+  `None` into an always-`True` lambda before it ever reached `gate()`.
+- `backend = make_backend(...)` is already constructed earlier in
+  `run_case()`, so `backend.name` was available to condition on without
+  restructuring anything.
+
+**The fix** (`agent.py`, `run_case()`): the fallback now only fires when
+`backend.name == "scripted"`:
+
+```python
+if approve is None and backend.name == "scripted":
+    approve = lambda action, payload: True
+```
+
+On the live backend, a missing `approve` now stays `None`, and `gate()`'s
+existing logic holds the booking correctly.
+
+**Regression check** — scripted backend, both decision modes, full 50-case
+set: **117/118 trials, unchanged** from before the fix (the one failing
+trial, `REF-6030`, is a separate known issue - see the repo's recent commit
+history, unrelated to this change).
+
+**New-behaviour check** — simulated a live backend replaying a real,
+correct move sequence (`REF-5620`, which genuinely resolves to "book") with
+no `approve` callback supplied:
+
+```
+decision: escalate
+stopped_by: gate_held
+guardrails_fired: [{'guardrail': 'gate_held', 'detail': 'book_slot (autonomy=confirm)'}]
+```
+
+Confirms the booking now correctly holds instead of silently going through.
+
+**Downstream implication, not yet acted on:** once the live battery (D5b)
+actually runs, whoever calls `run_case`/`run_set` against `BACKEND="live"`
+needs to explicitly supply an `approve` callback (e.g.
+`lambda a, p: True`, mirroring what the scripted path did implicitly) if
+the goal is measuring *decision quality* rather than exercising the real
+approval flow. Without it, every live "book" case will now correctly show
+as held/escalated - which is the right safety behaviour, but will read as a
+lower pass rate if nobody accounts for it. Worth deciding before the live
+battery is run, not after.
+
+**Next step (owned by the reporter):** add a guardrail-checklist case for
+the missing-approval-holds behaviour and rerun the D3 checklist.
