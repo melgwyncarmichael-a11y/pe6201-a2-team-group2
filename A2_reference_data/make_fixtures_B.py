@@ -858,6 +858,48 @@ EXTRA_REFERRALS = [
      "date_received": "2026-09-09",
      "clinical_summary": "Sudden visual loss in the left eye since this morning.",
      "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-08"},
+
+    # REF-6036 - POSITIVE CASE (BOOK): Routine Dermatology referral, no mandatory tests.
+    {"referral_id": "REF-6036", "patient_id": "P-1180",
+     "referring_clinic": "Test Clinic", "specialty": "DER",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Persistent rash on both arms for three weeks. Query eczema.",
+     "tests_attached": [], "tests_attached_on": None},
+
+    # REF-6037 - NEGATIVE CASE (Missing Test): Cardiology needs ECG-12 and BNP-01.
+    {"referral_id": "REF-6037", "patient_id": "P-1227",
+     "referring_clinic": "Test Clinic", "specialty": "CARD",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Palpitations for three months. Query arrhythmia.",
+     "tests_attached": ["ECG-12"], "tests_attached_on": "2026-09-05"},
+
+    # REF-6038 - NEGATIVE CASE (Missing Test): Ophthalmology needs VF-01, none attached.
+    {"referral_id": "REF-6038", "patient_id": "P-1233",
+     "referring_clinic": "Test Clinic", "specialty": "OPH",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Blurred vision for six months. Query cataract.",
+     "tests_attached": [], "tests_attached_on": None},
+
+    # REF-6039 - NEGATIVE CASE (Red Flag): Ophthalmology red-flag term "painful red eye".
+    {"referral_id": "REF-6039", "patient_id": "P-1241",
+     "referring_clinic": "Test Clinic", "specialty": "OPH",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Painful red eye with blurred vision since yesterday.",
+     "tests_attached": ["VF-01"], "tests_attached_on": "2026-09-01"},
+
+    # REF-6040 - NEGATIVE CASE (Specialty Mismatch): Sent to CARD but describes a skin problem.
+    {"referral_id": "REF-6040", "patient_id": "P-1180",
+     "referring_clinic": "Test Clinic", "specialty": "CARD",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Rash on both arms for three weeks. Query eczema.",
+     "tests_attached": ["ECG-12"], "tests_attached_on": "2026-09-03"},
+
+    # REF-6041 - NEGATIVE CASE (No Slot in Window): Urgent ENT referral, tests attached.
+    {"referral_id": "REF-6041", "patient_id": "P-1233",
+     "referring_clinic": "Test Clinic", "specialty": "ENT",
+     "date_received": "2026-09-09",
+     "clinical_summary": "Blocked ear, worsening over days after a cold.",
+     "tests_attached": ["AUD-01", "NASO-02"], "tests_attached_on": "2026-09-04"},
 ]
 
 def write():
