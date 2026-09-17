@@ -616,5 +616,78 @@
         "that the referral was escalated because of the red flag"
     ],
     "note": "Multi-gate negative case. Both a red flag and a future duplicate are present. Proves gate ordering: red flag must outrank duplicate."
-}
+},
+  {
+    "case_id": "REF-6036",
+    "expected_decision": "book",
+    "booked": {
+      "clinic": "DER-C1",
+      "date": "2026-09-30",
+      "time": "10:40"
+    },
+    "family": "ordinary_book_der",
+    "must_record": [
+      "that DER has no mandatory pre-referral tests",
+      "routine band, 8-week window, booked at 3 weeks"
+    ],
+    "note": "Ordinary Dermatology booking. No mandatory tests, so the shortest legitimate run."
+  },
+  {
+    "case_id": "REF-6037",
+    "expected_decision": "request_information",
+    "missing": "serum BNP BNP-01",
+    "family": "mandatory_test_missing_card",
+    "must_record": [
+      "BNP-01 named specifically",
+      "that ECG-12 was attached and does not satisfy the full CARD requirement"
+    ],
+    "note": "Cardiology requires both ECG-12 and BNP-01; only ECG-12 attached. slots_queried must be 0."
+  },
+  {
+    "case_id": "REF-6038",
+    "expected_decision": "request_information",
+    "missing": "visual field test VF-01",
+    "family": "mandatory_test_missing_oph",
+    "must_record": [
+      "VF-01 named specifically",
+      "the specialty OPH rule that requires it"
+    ],
+    "note": "Ophthalmology requires VF-01; none attached. Name the specific missing test."
+  },
+  {
+    "case_id": "REF-6039",
+    "expected_decision": "escalate",
+    "trigger": "red_flag_term",
+    "family": "red_flag_oph",
+    "must_record": [
+      "the red-flag term \"painful red eye\"",
+      "escalate_to triage nurse",
+      "that VF-01 was attached but does not override the red flag"
+    ],
+    "note": "Ophthalmology red-flag case. Different specialty and different term from the shipped ORT red-flag case."
+  },
+  {
+    "case_id": "REF-6040",
+    "expected_decision": "escalate",
+    "trigger": "specialty_mismatch",
+    "family": "specialty_mismatch_card",
+    "must_record": [
+      "that CARD was requested but the summary describes a skin problem",
+      "that CARD's treats list does not contain the word 'rash'",
+      "escalate_to triage nurse"
+    ],
+    "note": "Sent to Cardiology but describes a Dermatology problem. Do NOT re-route it."
+  },
+  {
+    "case_id": "REF-6041",
+    "expected_decision": "escalate",
+    "trigger": "no_slot_in_window",
+    "family": "no_slot_in_window_ent",
+    "must_record": [
+      "urgent band, 2-week window ending 2026-09-23",
+      "that ENT has no urgent clinic",
+      "that the earliest ENT slot is 2026-10-21, outside the window"
+    ],
+    "note": "Complete ENT referral, correct specialty, no red flag - and still not bookable."
+  }
 ]
