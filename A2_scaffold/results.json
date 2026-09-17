@@ -28,7 +28,7 @@
         "tokens_in": 14400,
         "tokens_out": 480,
         "cost_usd": 0.001632,
-        "seconds": 0.001,
+        "seconds": 0.002,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
@@ -133,7 +133,7 @@
         "tokens_in": 21000,
         "tokens_out": 600,
         "cost_usd": 0.00234,
-        "seconds": 0.0,
+        "seconds": 0.001,
         "guardrails_fired": [
           {
             "guardrail": "gate_passed",
@@ -358,7 +358,7 @@
         "tokens_in": 21000,
         "tokens_out": 600,
         "cost_usd": 0.00234,
-        "seconds": 0.0,
+        "seconds": 0.002,
         "guardrails_fired": [
           {
             "guardrail": "gate_passed",
@@ -2064,7 +2064,7 @@
         "tokens_in": 14400,
         "tokens_out": 480,
         "cost_usd": 0.001632,
-        "seconds": 0.001,
+        "seconds": 0.0,
         "guardrails_fired": [
           {
             "guardrail": "route_mismatch_nonblocking",
