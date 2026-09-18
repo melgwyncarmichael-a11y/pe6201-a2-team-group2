@@ -7,6 +7,57 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Wrong specialty/referral value (not shape) crashed resolve_routing() with AttributeError
+
+**Reported by:** a teammate running `deepseek/deepseek-chat-v3.1` live
+(`decision_mode=model`, GitHub Codespaces):
+
+```
+File "tools.py", line 311, in resolve_routing
+    if criteria.get("red_flag_term"):
+AttributeError: 'NoneType' object has no attribute 'get'
+```
+
+**Root cause:** `get_referral`, `check_referral_criteria`, and
+`lookup_patient` are all documented to return `None` when called with an
+id/specialty that doesn't exist - a DIFFERENT failure mode from today's
+earlier bad-argument-SHAPE fix (`tools.call()`'s `TypeError` catch,
+`docs/CHANGELOG.md` above): here the argument shape is fine, the VALUE
+is just wrong (a live model calling a real tool with a hallucinated or
+mistyped specialty/referral_id). `agent.py`'s trigger for computing
+`resolve_routing()` checked `"check_referral_criteria" in context` -
+key EXISTENCE, not value truthiness. `context[name] = result` runs
+unconditionally, so the key is present even when the tool legitimately
+returned `None`. `resolve_routing()` then received `criteria=None` and
+crashed on `criteria.get(...)` - and the same call site also indexes
+`context["get_referral"]["specialty"]` with no guard at all, a second
+crash risk from the same root cause.
+
+**The fix (`agent.py`):** the trigger condition now uses
+`context.get(name)` (truthy check) for all three dependencies -
+`get_referral`, `check_referral_criteria`, `lookup_patient` - instead of
+key-existence checks. When any of them is `None`, `resolve_routing()` is
+simply not called this turn and `resolved` stays `None`, the same
+graceful state the rest of the codebase already handles everywhere
+(`check_route_consistency`, `note_mismatch` both already tolerate
+`resolved=None`). `tools.resolve_routing()` itself is untouched - its
+docstring's "FAILS WHEN never" claim is true again now that the caller
+actually respects the contract of only calling it with real data.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Reproduced the exact reported failure directly:
+  `tools.check_referral_criteria('NOTAREALSPECIALTY', 'REF-5590')`
+  returns `None` (confirmed, not simulated); confirmed the new guard
+  condition evaluates to `False` for that context instead of proceeding.
+- Full end-to-end `run_case()` simulation with a mocked live backend that
+  reproduces the exact sequence (valid `get_referral`, a
+  `check_referral_criteria` call with a hallucinated specialty returning
+  `None`, valid `lookup_patient`, then conclude): completes cleanly,
+  `resolved_routing: null` in the record, no crash.
+
+---
+
 ## 2026-09-18 — Reversed today's earlier "leave it as a hard crash" call: unknown-tool KeyError now caught too
 
 **What happened:** the very judgement call flagged in this file a few

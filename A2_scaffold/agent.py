@@ -162,9 +162,25 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             # modes, the moment both facts it needs are available - never
             # before, since it would be wrong to guess at a duplicate check
             # with no patient data yet. See config.DECISION_MODE.
+            #
+            # context.get(name) - not "name in context" - on purpose.
+            # get_referral/check_referral_criteria/lookup_patient are all
+            # documented to return None when the id/specialty they were
+            # called with doesn't exist (a live model can call a real
+            # tool with a WRONG value, not just a wrong shape - tools.call()
+            # already handles a wrong shape). The key is still set in
+            # context either way (context[name] = result runs
+            # unconditionally), so "in context" is true even when the
+            # value is None. Seen live (deepseek/deepseek-chat-v3.1):
+            # check_referral_criteria(specialty=..., referral_id=...)
+            # returned None, and resolve_routing() crashed on
+            # criteria.get(...) - an AttributeError on 'NoneType', not a
+            # gradeable record. A truthy check on the VALUE catches this;
+            # a key-existence check does not.
             if (problem == "B" and resolved is None
-                    and "check_referral_criteria" in context
-                    and "lookup_patient" in context):
+                    and context.get("get_referral")
+                    and context.get("check_referral_criteria")
+                    and context.get("lookup_patient")):
                 resolved = tools.resolve_routing(
                     context["get_referral"]["specialty"],
                     context["check_referral_criteria"],
