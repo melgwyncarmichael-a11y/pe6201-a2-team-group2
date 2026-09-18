@@ -124,13 +124,20 @@ def prepare_judgement_check(record, expected):
 # =====================================================================
 # RUNNING THE SET
 # =====================================================================
-def run_set(case_ids=None, problem=None, trials_for=None, verbose=False):
+def run_set(case_ids=None, problem=None, trials_for=None, verbose=False,
+            approve=None):
     """Run cases and grade them.
 
     `trials_for(case_id) -> int` decides how many trials each case gets.
     D4: ordinary cases get ONE trial; NEGATIVE cases get THREE, because
     negatives are the ones that flip between runs and a single trial
     cannot tell a real refusal from a lucky one.
+
+    `approve`, if given, is passed straight through to `run_case` for
+    every trial - see run_eval.py's --auto-approve flag. Left as None,
+    a live run correctly HOLDS every booking (guardrails.gate() fails
+    closed on approve=None); that is the production default, not a bug
+    to work around here.
     """
     problem = problem or config.PROBLEM
     key = load_key(problem)
@@ -148,7 +155,8 @@ def run_set(case_ids=None, problem=None, trials_for=None, verbose=False):
             continue
 
         for trial in range(1, trials_for(cid) + 1):
-            record = run_case(cid, problem=problem, verbose=verbose)
+            record = run_case(cid, problem=problem, approve=approve,
+                              verbose=verbose)
             passed, fails = code_check(record, expected)
             results.append({"case_id": cid, "trial": trial, "passed": passed,
                             "fails": fails, "record": record,

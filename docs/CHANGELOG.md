@@ -7,6 +7,49 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Added `--auto-approve` to `run_eval.py`
+
+**Why now:** flagged as an open gap in `docs/MODEL_BATTERY_PLAN.md` and in
+the "downstream implication" note on the autonomy-gate fix below — once
+that fix landed, a live run with no approval callback correctly *holds*
+every `book` case (`gate_held`), which is the right safety behaviour but
+means nobody could get a meaningful pass rate out of either the D5(b)
+battery or the rules-vs-model comparison without first wiring something up.
+
+**The fix:**
+- `harness.py` — `run_set()` now takes an `approve=None` parameter and
+  passes it straight through to `run_case()` for every trial. Left as
+  `None` (the default), behaviour is unchanged.
+- `run_eval.py` — new `--auto-approve` flag. When passed, it builds
+  `approve = lambda action, payload: True` and threads it through both the
+  single-case and set/`--all` run paths. Prints an explicit banner
+  ("SIMULATING approval... not a human review") every time it's active, and
+  records `"auto_approve": true/false` in `results.json` so a marker or
+  teammate reading someone else's results can tell whether a run's booking
+  outcomes reflect simulated approval.
+- Deliberately **not** a change to `config.py` or `AUTONOMY` — the flag
+  only affects this evaluation harness's own calls into `run_case`, never
+  the production gate itself. On the scripted backend it's a no-op (that
+  backend already auto-approves internally); it only matters on `BACKEND
+  = "live"`.
+
+**Verified:**
+- `run_eval.py --auto-approve` (scripted, default `--mode`): **118/118,
+  100%**, identical to a plain run — confirms no regression on the path
+  that already auto-approved.
+- `run_eval.py --mode model` and plain `run_eval.py` (no flag), rerun after
+  this change: **118/118, 100%** both — `--mode` and default-mode parsing
+  unaffected by the new flag's argument handling.
+- `results.json`'s new `auto_approve` field reads `false` on a normal run
+  and `true` under the flag, confirmed by inspection.
+
+**Still open:** this only removes the *harness*-side blocker. Whoever runs
+the live battery still needs their own `OPENROUTER_API_KEY` (own shell,
+never committed) and their model's price added to `config.PRICES` first —
+see `docs/MODEL_BATTERY_PLAN.md` items 1–2.
+
+---
+
 ## 2026-09-17 — Live-run cost was unmeasurable; per-model pricing was flat
 
 **Why this was checked now:** before anyone spends real API budget on the

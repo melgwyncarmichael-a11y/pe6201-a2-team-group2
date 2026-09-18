@@ -8,6 +8,7 @@ PE6201 · A2 scaffold — ENTRY POINT
     python3 run_eval.py --prompt     print what the model is told, and stop
     python3 run_eval.py --mode rules   force DECISION_MODE for this run only
     python3 run_eval.py --mode model   (does not edit config.py)
+    python3 run_eval.py --auto-approve simulate approval - see below
 
 THIS IS WHAT A MARKER RUNS. Clone, `python3 run_eval.py`, numbers come
 back. No key, no network, no arguments. If that does not work on a
@@ -15,6 +16,19 @@ clean machine, D5(a) has failed and Technical Execution is capped.
 --mode is an override for THIS invocation, never a requirement - the
 default run with no flags uses whatever config.DECISION_MODE already
 says, which is exactly what a marker's plain `python3 run_eval.py` does.
+
+--auto-approve IS ONLY FOR THIS HARNESS, NOT A PRODUCTION SETTING. The
+scripted backend already auto-approves internally, so this flag does
+nothing there. On the LIVE backend (D5b, the rules-vs-model comparison)
+a run with no approval callback correctly HOLDS every booking - that is
+guardrails.gate() failing closed on approve=None, exactly as designed,
+not a bug. Without this flag, every 'book' case on a live run will show
+gate_held and the pass rate will not reflect decision quality at all.
+Pass --auto-approve to simulate a human always saying yes, so the code
+check can actually grade the booking. This is an explicit, logged
+simulation for MEASUREMENT - see docs/CHANGELOG.md and
+D3_guardrails-Cao Xiaohan/D3_GUARDRAILS.md. It is never a reason to
+change AUTONOMY to "act" in config.py.
 
 Want a guided pick instead of remembering the flag? Run
 `python3 choose_mode.py` - it explains both modes in plain language and
@@ -58,6 +72,22 @@ def main(argv):
     args = [a for a in rest if not a.startswith("-")]
     flags = {a for a in rest if a.startswith("-")}
 
+    # --auto-approve simulates a human always saying yes at the gate in
+    # front of book_slot. It changes nothing on the scripted backend
+    # (which already auto-approves internally to stay deterministic);
+    # on the live backend it is what lets a 'book' case actually book
+    # instead of correctly holding on approve=None. See the module
+    # docstring above and docs/CHANGELOG.md.
+    approve = None
+    auto_approve = "--auto-approve" in flags
+    if auto_approve:
+        approve = lambda action, payload: True
+        print()
+        print("  --auto-approve: SIMULATING approval for every book_slot call.")
+        print("  This is a measurement device, not a human review. Do not")
+        print("  read a live pass rate under this flag as evidence anyone")
+        print("  approved anything.")
+
     # ---- show exactly what the model is told, then stop ----------------
     if "--prompt" in flags:
         import prompt
@@ -72,7 +102,7 @@ def main(argv):
         print("-" * 68)
         print("  %s - every turn" % case_id)
         print("-" * 68)
-        results, queue = run_set([case_id], verbose=True)
+        results, queue = run_set([case_id], verbose=True, approve=approve)
         if not results:
             return 1
         print()
@@ -111,11 +141,12 @@ def main(argv):
               % config.PROBLEM)
         return 1
 
-    results, queue = run_set(cases)
+    results, queue = run_set(cases, approve=approve)
     summary = report(results)
 
     with open("results.json", "w", encoding="utf-8") as fh:
-        json.dump({"config": config.summary(), "summary": summary,
+        json.dump({"config": config.summary(), "auto_approve": auto_approve,
+                   "summary": summary,
                    "results": [{k: v for k, v in r.items()} for r in results],
                    "judgement_queue": queue}, fh, indent=2, default=str)
     print("  Wrote results.json - commit it. Your result tables come from")

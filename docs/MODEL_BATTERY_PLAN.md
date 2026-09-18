@@ -88,11 +88,12 @@ every constraint above with room to argue about the exact picks.
 ## 2 · The rules-vs-model comparison
 
 One person, one model (a cheap one — this doesn't need six keys), same
-25/35/50-case eval set, run twice:
+25/35/50-case eval set, run twice, on `BACKEND = "live"` with
+`--auto-approve` so `book` cases can actually complete (see item 3 below):
 
 ```bash
-python3 run_eval.py --mode rules --all
-python3 run_eval.py --mode model --all
+python3 run_eval.py --mode rules --all --auto-approve
+python3 run_eval.py --mode model --all --auto-approve
 ```
 
 Compare: pass rate, turns, tokens, cost, and — the most interesting
@@ -110,14 +111,22 @@ evidence behind the team's D0/D6 architecture argument.
 2. **Add your model's real price to `config.PRICES`** in `A2_scaffold/config.py`
    before running — the code refuses to run with an unlisted model rather
    than silently mispricing it.
-3. **An approval callback for the live run.** Since the autonomy-gate fix
-   (see `docs/CHANGELOG.md`), a live run with no approval callback now
-   correctly *holds* every booking instead of auto-approving — which means
-   every `book` case will show as "held" unless one is supplied. **A
-   `--auto-approve` flag for `run_eval.py` does not exist yet** — this needs
-   to be added before step 2 (the rules-vs-model comparison) or anyone's
-   battery slot can produce a meaningful pass rate. Flag this before
-   picking a start date.
+3. **Pass `--auto-approve`.** Since the autonomy-gate fix (see
+   `docs/CHANGELOG.md`), a live run with no approval callback correctly
+   *holds* every booking instead of auto-approving — every `book` case
+   will show as "held" otherwise. `run_eval.py` now has a
+   `--auto-approve` flag (added 2026-09-18, see `docs/CHANGELOG.md`) that
+   simulates a human always saying yes, purely for measuring decision
+   quality:
+
+   ```bash
+   python3 run_eval.py --mode rules --all --auto-approve
+   python3 run_eval.py --mode model --all --auto-approve
+   ```
+
+   It's a no-op on the scripted backend (already auto-approves
+   internally) and only matters once `BACKEND = "live"`. It never changes
+   `AUTONOMY` in `config.py` — the production gate is untouched.
 4. **Revert `BACKEND` back to `"scripted"` locally before committing** —
    that has to stay the committed default for the whole repo.
 5. **Save your results under your own filename** (e.g. `results_<model>.json`)
@@ -132,4 +141,6 @@ evidence behind the team's D0/D6 architecture argument.
 - Who takes the v1-vs-v2 prompt pass instead of a model slot.
 - Who runs the rules-vs-model comparison (can be done by anyone, doesn't
   need to be one of the 6).
-- A start date, given item 3 above is a real blocker until it's built.
+- A start date — `--auto-approve` (item 3 above) is now built, so this is
+  no longer blocked on that; the only remaining prerequisites are each
+  person's own API key and price entry (items 1–2).
