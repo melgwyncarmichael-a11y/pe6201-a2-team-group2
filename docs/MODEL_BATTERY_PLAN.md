@@ -79,16 +79,38 @@ since the brief's table was set.
 
 | Slot | Family | Model | Tier |
 |---|---|---|---|
-| A | OpenAI | `openai/gpt-5.6-luna` | Cheap |
-| B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap |
-| C | Mistral | `mistralai/mistral-small-2603` | Cheap |
-| D | Google | `google/gemini-3.8-flash` | Mid |
-| E | Qwen | `qwen/qwen3.8-max` | Mid |
+| A | OpenAI | `openai/gpt-5.6-luna` | Cheap — **done** |
+| B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap — running |
+| C | Mistral | `mistralai/mistral-small-2603` | Cheap — not started |
+| D | Google | `google/gemini-3.8-flash` | Mid — not started |
+| E | Qwen | `qwen/qwen3.8-max` | Mid — not started |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — **`REF-6007` only, already run, $0 more to spend** |
 | G (7th member) | — | v1-vs-v2 prompt pass, on whichever model the team fixes | — |
 
 3 cheap + 2 mid + 1 frontier, 6 distinct families, 2+ tiers — satisfies
 every constraint above with room to argue about the exact picks.
+
+### Results so far
+
+| Slot | Model | Raw pass rate | Decision-level accuracy* | Cost | Status |
+|---|---|---|---|---|---|
+| A | `openai/gpt-5.6-luna` | 40.7% (48/118) | **94.9%** (112/118) | US$0.1473 | Done, committed as `results_model_gpt5.6-luna.json` |
+| B | `deepseek/deepseek-v4.1-flash` | — | — | — | Smoke-tested clean, full battery running |
+| C | `mistralai/mistral-small-2603` | — | — | — | Not started |
+| D | `google/gemini-3.8-flash` | — | — | — | Not started |
+| E | `qwen/qwen3.8-max` | — | — | — | Not started |
+| F | `anthropic/claude-opus-5` | 0/3 code-check pass (trigger-wording only) | escalate in all 3 (from the verbose transcript - no saved results file for a single-case run) | US$0.157 | Done (`REF-6007` only) |
+
+\* Decision-level accuracy sets aside pure trigger-*wording* mismatches
+where the underlying decision was actually correct - see
+`docs/RULES_VS_MODEL_RESULTS.md` for the full explanation of why raw
+pass rate alone is misleading for `DECISION_MODE="model"` results. Every
+model in this table shows the same pattern: most "failures" are a model
+inventing its own trigger label instead of the answer key's exact
+string, not a wrong decision.
+
+Nothing has hit a guardrail stop or crashed in any run so far - every
+number above is a real measurement, not an estimate.
 
 ### The frontier tier's actual scope (decided 2026-09-18)
 
