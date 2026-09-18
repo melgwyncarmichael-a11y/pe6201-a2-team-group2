@@ -120,7 +120,11 @@ table names that resolve_routing has no field to compute. Any other content
 
 _HOW_TO_ANSWER = """
 HOW TO ANSWER
-Reply with JSON and nothing else. Two shapes only:
+Your ENTIRE reply must be one JSON object and NOTHING else - no prose before
+or after it, no explanation, no markdown code fences. The first character
+you write must be { and the last must be }. Do not describe what you are
+about to do in plain English; put "thought" inside the JSON object instead.
+Two shapes only:
 
   to call tools (several at once ONLY if they do not depend on each other):
     {"thought": "...", "calls": [["tool_name", {"arg": "value"}], ...]}

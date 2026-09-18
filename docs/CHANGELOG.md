@@ -7,6 +7,79 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — `openai/gpt-4o-mini` narrated in prose instead of JSON; 0-47.5% pass rate was a formatting bug, not a decision-quality result
+
+**Found by:** the team's first full-battery live run of the rules-vs-model
+comparison (`--backend live --model openai/gpt-4o-mini --all
+--auto-approve`, both `--mode rules` and `--mode model`, 118 trials each).
+Rules mode: 56/118 (47.5%). Model mode: **0/118 (0%)**. Every single one of
+118 trials in the `stopped_by` field was `null` - no guardrail fired,
+worst-case turns was 2 in both runs (nowhere near the 8-turn cap) - so this
+was not a loop failure or a budget/step-cap issue.
+
+**Root cause, confirmed with a single-case verbose live re-run
+(`REF-5590`, `--mode model`):** the model's raw response was plain
+English, not JSON at all:
+
+```
+unparseable: Escalating due to the red-flag term "sudden visual loss" in the clinical su[mmary]...
+```
+
+`gpt-4o-mini` was narrating its reasoning as prose instead of emitting the
+required `{"thought": ..., "final": {...}}` envelope - despite the system
+prompt already saying "Reply with JSON and nothing else." Claude Opus 5
+complied reliably on the same prompt structure (see the REF-6007 entry
+below); a cheaper, less instruction-tuned model did not. `_parse_move()`
+correctly caught this as unparseable and returned a gradeable escalate
+record rather than crashing (that safety net, added earlier today, is
+exactly why this degraded to a bad number instead of another crash) - but
+a 0%/47.5% pass rate driven by JSON-formatting failures says nothing
+about whether rules mode actually beats model mode. **This data must not
+be used for the D0/D6 argument.**
+
+**Considered and rejected:** forcing OpenRouter's `response_format:
+{"type": "json_schema", ...}` structured-output mode in `_live_call()`.
+Checked OpenRouter's own docs first - support is "per endpoint... can
+change over time," and an unsupported model **hard-fails the request**
+rather than degrading gracefully. `_live_call()` is the one function every
+team member's battery model runs through; forcing a parameter that could
+silently break a *different* model's slot weeks from now was not worth
+the risk for a fix this narrow.
+
+**The fix, both changes safe for every model:**
+- `prompt.py` (`_HOW_TO_ANSWER`) - strengthened from "Reply with JSON and
+  nothing else" to explicit instructions: first character must be `{`,
+  last must be `}`, no prose, no markdown fences, put reasoning inside
+  `"thought"` rather than writing it as plain text.
+- `backends.py` (`LiveBackend.next_move()`) - one self-correction retry
+  when a response comes back unparseable: re-sends the conversation plus
+  the model's own failed reply and a blunt "that wasn't valid JSON, try
+  again" instruction. If the retry parses, its move is used; if both
+  attempts fail, the ORIGINAL failure record is kept (not the retry's),
+  so `thought` shows what the model actually said on its real attempt.
+  Both calls' token usage are summed into cost - a retry is real spend
+  and must be counted, not hidden.
+- `_parse_move()` now returns an internal `"_unparseable": True` sentinel
+  on failure instead of relying on string-matching its own error message
+  to detect the failure case.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected
+  (`ScriptedBackend` never calls `_live_call`/`_parse_move`).
+- Mocked `LiveBackend.next_move()` with a fake `_live_call` returning
+  unparseable prose then valid JSON: retry fires, the parsed retry move is
+  returned, and usage correctly sums both calls (150 in / 35 out from two
+  calls of 100+50 / 20+15).
+- Mocked both calls returning unparseable text: the ORIGINAL failure
+  record is kept (not the retry's), and usage still sums both calls
+  (200 in / 40 out).
+
+**Still needed:** re-run the full rules-vs-model comparison on
+`gpt-4o-mini` with this fix in place before trusting any pass-rate number
+from it. Update this entry (or add a new one) with the real result.
+
+---
+
 ## 2026-09-18 — `openai/gpt-4o-mini`'s price in `config.PRICES` was stale
 
 **Why checked now:** about to spend real money running the rules-vs-model
