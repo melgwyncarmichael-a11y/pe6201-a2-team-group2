@@ -7,6 +7,56 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — A malformed tool call from a live model crashed the whole run, not just one case
+
+**Reported by:** a teammate running `deepseek/deepseek-chat-v3.1` live
+(`decision_mode=model`, GitHub Codespaces), who hit an uncaught traceback
+partway through their battery:
+
+```
+File ".../tools.py", line 755, in call
+    return table[name](**args)
+TypeError: check_referral_criteria() missing 1 required positional argument: 'specialty'
+```
+
+**Root cause:** `tools.call()` dispatched `table[name](**args)` with no
+validation at all. `check_referral_criteria(specialty, referral_id)`
+requires both arguments; the model's tool call only supplied
+`referral_id`. Python's own `TypeError` propagated all the way up through
+`agent.py` and `harness.run_set()` uncaught, killing the entire Python
+process - not just the one case being run, but every case still queued
+after it in that person's battery slot.
+
+**Same category as two earlier fixes today** (the `None`-content crash in
+`_parse_move` and the missing-`choices` crash in `_live_call`): untrusted
+output from a live model reaching a boundary that assumed well-formed
+input. `get_referral`/`check_referral_criteria`/etc. already model KNOWN
+soft failures as returned data (`"RETURNS NONE when the referral ...
+does not exist"`); a malformed ARGUMENT SHAPE from the model is the same
+kind of untrusted input, just caught one layer earlier, before the tool
+function's own body ever runs.
+
+**The fix (`tools.py`, `call()`):** wraps `table[name](**args)` in
+`try/except TypeError`, returning `{"error": "bad_arguments", "detail":
+"<call> - <what Python said>"}` instead of letting the exception escape.
+The agent sees this as an ordinary observation, the same as any other
+tool result - the record stays gradeable instead of the whole run
+vanishing into a traceback. The deliberate `KeyError` for an unknown tool
+NAME is untouched - that one stays a hard failure on purpose (see the
+function's own docstring: a silent no-op there would hide a real
+agent/tool-registry bug).
+
+**Verified:**
+- Scripted regression: **118/118, 100%**, unaffected.
+- Reproduced the exact reported call
+  (`tools.call('B', 'check_referral_criteria', {'referral_id': 'REF-5590'})`)
+  directly: now returns the gradeable error dict instead of raising.
+- Confirmed the unknown-tool-name `KeyError` still fires exactly as
+  before - this fix narrows the catch to `TypeError` only, not a blanket
+  except.
+
+---
+
 ## 2026-09-18 — `openai/gpt-4o-mini` narrated in prose instead of JSON; 0-47.5% pass rate was a formatting bug, not a decision-quality result
 
 **Found by:** the team's first full-battery live run of the rules-vs-model

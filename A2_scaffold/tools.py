@@ -741,15 +741,29 @@ DESCRIPTORS = {
 def call(problem, name, args):
     """Dispatch a tool call by name.
 
-    WATCH OUT      unknown tool names fail LOUDLY. A silent no-op here
-                   would produce a run that looks fine and decided
-                   nothing on evidence it never gathered - the most
-                   expensive kind of bug in this assignment, because
-                   nothing about the output says anything went wrong.
+    WATCH OUT      unknown tool names fail LOUDLY (that KeyError is
+                   deliberate - a silent no-op here would produce a run
+                   that looks fine and decided nothing on evidence it
+                   never gathered). A wrong ARGUMENT SHAPE is a different
+                   thing: that is untrusted output from a live model, not
+                   an internal bug, and a live model can call a real tool
+                   with a missing, extra or mistyped argument. Seen live
+                   (deepseek/deepseek-chat-v3.1): check_referral_criteria
+                   called with 'specialty' omitted, which raised a bare
+                   TypeError that took the ENTIRE run down - not just
+                   that one case, every case queued after it too. Caught
+                   here and turned into an observation the agent (and a
+                   human reading the record) can see, the same way a
+                   tool's own "not found" result already is.
     """
     table = REGISTRY[problem]
     if name not in table:
         raise KeyError(
             "No tool named %r for Problem %s. Available: %s"
             % (name, problem, ", ".join(sorted(table))))
-    return table[name](**args)
+    try:
+        return table[name](**args)
+    except TypeError as e:
+        return {"error": "bad_arguments",
+                "detail": "%s(%s) - %s"
+                          % (name, ", ".join("%s=%r" % kv for kv in args.items()), e)}
