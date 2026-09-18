@@ -741,26 +741,30 @@ DESCRIPTORS = {
 def call(problem, name, args):
     """Dispatch a tool call by name.
 
-    WATCH OUT      unknown tool names fail LOUDLY (that KeyError is
-                   deliberate - a silent no-op here would produce a run
-                   that looks fine and decided nothing on evidence it
-                   never gathered). A wrong ARGUMENT SHAPE is a different
-                   thing: that is untrusted output from a live model, not
-                   an internal bug, and a live model can call a real tool
-                   with a missing, extra or mistyped argument. Seen live
-                   (deepseek/deepseek-chat-v3.1): check_referral_criteria
-                   called with 'specialty' omitted, which raised a bare
-                   TypeError that took the ENTIRE run down - not just
-                   that one case, every case queued after it too. Caught
-                   here and turned into an observation the agent (and a
-                   human reading the record) can see, the same way a
-                   tool's own "not found" result already is.
+    WATCH OUT      an unknown tool name USED TO fail loudly here (a bare
+                   KeyError) on the theory that a silent no-op would hide
+                   a real agent/registry bug. Reality, seen live
+                   (openai/gpt-4o-mini, decision_mode=model): the model
+                   confused a DECISION VALUE ("request_information" is
+                   one of the three valid outcomes) with a TOOL NAME and
+                   tried to call it - the same live-model-hallucination
+                   risk as a bad argument shape, just one layer earlier.
+                   The KeyError took the ENTIRE battery run down - not
+                   just that case, every case queued after it, AND it
+                   silently corrupted the next step too: the caller's
+                   `mv results.json ...` picked up a STALE file from a
+                   previous run instead of erroring, so a crashed run
+                   looked like a completed one with a real (wrong) pass
+                   rate. Caught here and turned into an observation, the
+                   same as a bad argument shape below - a human or the
+                   agent can see "unknown_tool" and know exactly what
+                   happened, instead of losing the whole run to it.
     """
     table = REGISTRY[problem]
     if name not in table:
-        raise KeyError(
-            "No tool named %r for Problem %s. Available: %s"
-            % (name, problem, ", ".join(sorted(table))))
+        return {"error": "unknown_tool",
+                "detail": "No tool named %r for Problem %s. Available: %s"
+                          % (name, problem, ", ".join(sorted(table)))}
     try:
         return table[name](**args)
     except TypeError as e:

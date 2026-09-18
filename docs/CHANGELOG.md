@@ -7,6 +7,55 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Reversed today's earlier "leave it as a hard crash" call: unknown-tool KeyError now caught too
+
+**What happened:** the very judgement call flagged in this file a few
+entries below ("deliberately NOT changed... a live model can now
+genuinely hallucinate a nonexistent tool name too") turned real within
+the hour. The `--mode model --all` run on `openai/gpt-4o-mini` crashed:
+
+```
+KeyError: "No tool named 'request_information' for Problem B.
+           Available: as_of, book_slot, check_referral_criteria,
+           get_clinic_slots, get_referral, lookup_patient"
+```
+
+The model confused a DECISION VALUE (`request_information` is one of the
+three valid outcomes) with a TOOL NAME and tried to call it. Not a
+one-case loss either: the run's own shell pipeline was
+`run_eval.py ...; mv results.json results_model_gpt4o-mini.json` with a
+bare newline, not `&&`, between them - when `run_eval.py` crashed and
+never wrote `results.json`, `mv` still ran, found nothing to move, failed
+silently, and left the PREVIOUS (pre-JSON-fix) `results_model_gpt4o-mini.json`
+sitting there untouched. `compare_modes.py` then read that stale file and
+reported a confident, wrong "0% pass rate" for a run that never actually
+happened - the exact "confident, wrong, unremarkable answer" failure mode
+`config.py`'s own stale-bytecode docstring warns about, just from a
+different mechanism. Caught by comparing file mtimes
+(`results_model_gpt4o-mini.json` was 25 minutes older than
+`results_rules_gpt4o-mini.json`, and its token totals matched the
+pre-fix run byte-for-byte) - the pass rate alone gave no hint anything
+was stale.
+
+**The fix (`tools.py`, `call()`):** the unknown-tool `KeyError` is now
+caught the same way as the bad-argument-shape `TypeError` already was -
+returns `{"error": "unknown_tool", "detail": ...}` instead of raising.
+One consistent policy: any live-model tool-call shape that's wrong (bad
+name, bad arguments) degrades to a gradeable observation, never a crash.
+
+**Process note, not a code fix:** chain live-run shell commands with
+`&&`, not bare newlines - `run_eval.py ... && mv results.json ...`  - so
+a crash stops the pipeline instead of letting `mv` silently succeed on
+stale leftover data from a previous run.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Reproduced the exact reported call
+  (`tools.call('B', 'request_information', {'reason': 'test'})`) directly:
+  now returns the gradeable error dict instead of raising.
+
+---
+
 ## 2026-09-18 — Proactive audit: two more move-shape crashes, found before any model hit them
 
 **Why checked now:** after fixing three separate "untrusted live-model
@@ -39,14 +88,11 @@ the `final` shape; anything malformed becomes the SAME escalate shape
 path (`if "final" in move`) handles every kind of malformed live-model
 output identically - a gradeable record, never a crash.
 
-**One thing deliberately NOT changed:** `tools.call()`'s `KeyError` for
-an unknown tool NAME still crashes the whole run - its own docstring says
-that's intentional ("a silent no-op here would produce a run that looks
-fine and decided nothing on evidence it never gathered"). That was
-written for catching an agent/registry mismatch during development, but a
-live model can now genuinely hallucinate a nonexistent tool name too.
-Flagged, not changed - this is a judgement call about intended behaviour,
-not an oversight like the others above.
+**One thing deliberately NOT changed at the time:** `tools.call()`'s
+`KeyError` for an unknown tool NAME still crashed the whole run - its own
+docstring said that was intentional. Flagged here as a judgement call
+about intended behaviour, not an oversight - **reversed within the hour**
+once it happened for real; see the entry above this one.
 
 **Verified:**
 - Scripted regression, both decision modes: **118/118, 100%**, unaffected.
