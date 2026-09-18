@@ -64,7 +64,7 @@ result couldn't be attributed to either one.
 | Qwen | `qwen/qwen3.8-flash` | $0.15 | $0.47 | Cheap (open-weight) |
 | Google | `google/gemini-3.5-flash-lite` | $0.30 | $2.50 | Cheap |
 | Google | `google/gemini-3.8-flash` | $0.75 | $3.75 | Mid |
-| Qwen | `qwen/qwen3.8-max` | $2.00 | $6.00 | Mid |
+| Qwen | `qwen/qwen3.8-max-0902` | $2.00 | $6.00 | Mid |
 | Anthropic | `anthropic/claude-sonnet-5` | $2.00 | $10.00 | Mid |
 | Anthropic | `anthropic/claude-opus-5` | $5.00 | $25.00 | Frontier |
 | OpenAI | `openai/gpt-6-astra` | $10.00 | $50.00 | Frontier |
@@ -83,7 +83,7 @@ since the brief's table was set.
 | B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap — running |
 | C | Mistral | `mistralai/mistral-small-2603` | Cheap — not started |
 | D | Google | `google/gemini-3.8-flash` | Mid — not started |
-| E | Qwen | `qwen/qwen3.8-max` | Mid — not started |
+| E | Qwen | `qwen/qwen3.8-max-0902` | Mid — not started |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — **`REF-6007` only, already run, $0 more to spend** |
 | G (7th member) | — | v1-vs-v2 prompt pass, on whichever model the team fixes | — |
 
@@ -94,11 +94,11 @@ every constraint above with room to argue about the exact picks.
 
 | Slot | Model | Raw pass rate | Decision-level accuracy* | Cost | Status |
 |---|---|---|---|---|---|
-| A | `openai/gpt-5.6-luna` | 40.7% (48/118) | **94.9%** (112/118) | US$0.1473 | Done, committed as `results_model_gpt5.6-luna.json` |
-| B | `deepseek/deepseek-v4.1-flash` | — | — | — | Smoke-tested clean, full battery running |
-| C | `mistralai/mistral-small-2603` | — | — | — | Not started |
-| D | `google/gemini-3.8-flash` | — | — | — | Not started |
-| E | `qwen/qwen3.8-max` | — | — | — | Not started |
+| A | `openai/gpt-5.6-luna` | 40.7% (48/118) | 94.9% (112/118) | US$0.1473 | Done, committed as `results_model_gpt5.6-luna.json` |
+| B | `deepseek/deepseek-v4.1-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.1294 | Done, committed as `results_model_deepseek-v4.1-flash.json` - best decision-level accuracy so far |
+| C | `mistralai/mistral-small-2603` | — | — | — | Hit two live infra issues before a real run: a `max_tokens` truncation bug and an HTTP 429 rate limit, both fixed/handled in code - see `docs/CHANGELOG.md`. Retrying. |
+| D | `google/gemini-3.8-flash` | — | — | — | Not started. Slug + price re-verified live 2026-09-18, unchanged from the table above. |
+| E | `qwen/qwen3.8-max-0902` | — | — | — | Not started. Slug corrected 2026-09-18 - `qwen/qwen3.8-max` (no date suffix) redirects to this on OpenRouter's own site; used the exact slug, not the alias. |
 | F | `anthropic/claude-opus-5` | 0/3 code-check pass (trigger-wording only) | escalate in all 3 (from the verbose transcript - no saved results file for a single-case run) | US$0.157 | Done (`REF-6007` only) |
 
 \* Decision-level accuracy sets aside pure trigger-*wording* mismatches
@@ -235,7 +235,7 @@ a reasoning-heavy model can land far past "verbose." Scaled to the full
 | B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap | US$0.09–$0.17 | ~12–45 min |
 | C | Mistral | `mistralai/mistral-small-2603` | Cheap | US$0.09–$0.17 | ~12–45 min |
 | D | Google | `google/gemini-3.8-flash` | Mid | US$0.45–$0.93 | ~12–45 min |
-| E | Qwen | `qwen/qwen3.8-max` | Mid | US$1.14–$1.94 | ~12–45 min |
+| E | Qwen | `qwen/qwen3.8-max-0902` | Mid | US$1.14–$1.94 | ~12–45 min |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — `REF-6007` only, **already done** | US$0.157 (spent, measured, not an estimate) | already run |
 
 **Grand total, all 6 slots**: roughly **US$1.89–$3.48** for slots A–E

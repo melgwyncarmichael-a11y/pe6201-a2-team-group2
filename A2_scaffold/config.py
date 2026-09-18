@@ -149,6 +149,10 @@ PRICES = {
     "openai/gpt-5.6-luna": (0.20, 1.20),
     "deepseek/deepseek-v4.1-flash": (0.15, 0.60),
     "mistralai/mistral-small-2603": (0.15, 0.60),
+    # "qwen/qwen3.8-max" redirects to this dated snapshot on OpenRouter's
+    # own site - used the exact slug shown, not the alias, same reason
+    # as the two notes above.
+    "qwen/qwen3.8-max-0902": (2.00, 6.00),
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
 }
 
