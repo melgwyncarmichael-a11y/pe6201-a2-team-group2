@@ -140,6 +140,11 @@ PRICES = {
     "openai/gpt-4o-mini": (0.15, 0.60),   # (price_in, price_out) per 1M tokens
     "anthropic/claude-opus-5": (5.00, 25.00),  # checked 2026-09-18, see
                                                 # docs/MODEL_BATTERY_PLAN.md
+    # Cheap-tier D5(b) candidates, checked 2026-09-18 - see
+    # docs/MODEL_BATTERY_PLAN.md's candidate table for the full spread.
+    "openai/gpt-5.6-luna": (0.20, 1.20),
+    "deepseek/deepseek-flash": (0.15, 0.60),
+    "mistralai/mistral-small-4": (0.15, 0.60),
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
 }
 
