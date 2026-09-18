@@ -7,6 +7,56 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Live run crashed on `deepseek/deepseek-chat-v3.1`: `TypeError` in `_parse_move`
+
+**Reported by:** a teammate's first live `--all` run (`BACKEND=live`,
+`MODEL=deepseek/deepseek-chat-v3.1`, `DECISION_MODE=rules`), which crashed
+partway through the 50-case set:
+
+```
+File "backends.py", line 1223, in _parse_move
+    return json.loads(text)
+TypeError: the JSON object must be str, bytes or bytearray, not NoneType
+```
+
+**Not `DECISION_MODE`.** The reporter's hunch was that `decision_mode=rules`
+caused it. Checked and ruled out: `DECISION_MODE` only changes which prompt
+text `agent.py` sends (`prompt.build_system_prompt`) - it never touches
+`backends.py`'s response parsing, which is identical in both modes. Traced
+the actual path instead: `LiveBackend.next_move()` → `_live_call()` →
+`_parse_move(raw)`. `_live_call()` read
+`payload["choices"][0]["message"]["content"]` and handed it straight to
+`_parse_move`, which only caught `json.JSONDecodeError` around
+`json.loads(text)`. When OpenRouter returned `content: null` for a turn -
+not unusual for some models on certain finish reasons (content filtering, a
+reasoning-only turn, an empty completion) - `json.loads(None)` raises
+`TypeError`, not `JSONDecodeError`, so it escaped the except clause
+uncaught and took the whole run down.
+
+**The fix (`backends.py`):**
+- `_parse_move(text)` now checks `isinstance(text, (str, bytes, bytearray))`
+  first. Non-string content is treated the same as unparseable JSON - a
+  gradeable `escalate` record naming the actual type received - instead of
+  crashing the run.
+- `_live_call()` now checks for `"choices"` in the response before indexing
+  into it, and raises a `RuntimeError` that includes OpenRouter's own
+  `"error"` body if present. A malformed request or provider-side problem
+  (bad model slug, rate limit, no credit) used to surface as a bare
+  `KeyError` pointing at an indexing line with no information about what
+  actually went wrong; now it says so directly. Also switched `content`
+  extraction to `.get("content")` so a response with `message` but no
+  `content` key returns `None` (now handled) instead of a second `KeyError`.
+
+**Verified:**
+- `run_eval.py --mode rules` and `--mode model`, full scripted set:
+  **118/118, 100%** both, unaffected (the scripted backend never calls
+  `_live_call`/`_parse_move`).
+- `_parse_move(None)` directly: returns a gradeable escalate record
+  (`"model returned no usable content (got NoneType instead of text)"`)
+  instead of raising.
+
+---
+
 ## 2026-09-18 — Added `--auto-approve` to `run_eval.py`
 
 **Why now:** flagged as an open gap in `docs/MODEL_BATTERY_PLAN.md` and in

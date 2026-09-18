@@ -1218,7 +1218,20 @@ class LiveBackend:
 
 def _parse_move(text):
     """The model must answer in JSON. Anything else is a run you cannot
-    grade, so say so loudly rather than guessing."""
+    grade, so say so loudly rather than guessing.
+
+    `text` can be non-string: some providers return `content: null` on
+    certain finish reasons (content filtering, a reasoning-only turn, an
+    empty completion) instead of an empty string. json.loads() raises
+    TypeError - not JSONDecodeError - on that, which used to escape this
+    function uncaught and crash the whole run. Treated the same as
+    unparseable JSON: a gradeable escalate record, not a crash.
+    """
+    if not isinstance(text, (str, bytes, bytearray)):
+        return {"final": {"decision": "escalate",
+                          "reason": "model returned no usable content "
+                                    "(got %s instead of text)" % type(text).__name__},
+                "thought": "unparseable: response content was %r" % (text,)}
     try:
         return json.loads(text)
     except json.JSONDecodeError:
@@ -1256,7 +1269,14 @@ def _live_call(messages):
                  "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=60) as r:
         payload = json.load(r)
-    content = payload["choices"][0]["message"]["content"]
+    # A malformed request or an OpenRouter-side problem (bad model slug,
+    # rate limit, no credit) comes back as HTTP 200 with an "error" body
+    # instead of "choices" - fail loudly with what the API actually said,
+    # rather than a bare KeyError pointing at this line.
+    if "choices" not in payload:
+        raise RuntimeError(
+            "OpenRouter response had no 'choices': %s" % payload.get("error", payload))
+    content = payload["choices"][0]["message"].get("content")
     usage = payload.get("usage") or {}
     return content, (usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0))
 
