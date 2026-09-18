@@ -142,7 +142,7 @@ def run_set(case_ids=None, problem=None, trials_for=None, verbose=False,
     problem = problem or config.PROBLEM
     key = load_key(problem)
     case_ids = case_ids or load_cases(problem)
-    trials_for = trials_for or (lambda cid: 3 if _is_negative(key.get(cid)) else 1)
+    trials_for = trials_for or (lambda cid: 3 if is_negative(key.get(cid)) else 1)
 
     results, judgement_queue = [], []
 
@@ -167,7 +167,7 @@ def run_set(case_ids=None, problem=None, trials_for=None, verbose=False,
     return results, judgement_queue
 
 
-def _is_negative(expected):
+def is_negative(expected):
     """A negative case is one whose correct outcome is anything except
     the act - so, an ask or an escalate."""
     if not expected:

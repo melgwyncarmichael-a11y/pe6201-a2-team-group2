@@ -7,6 +7,54 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Added `--backend`/`--model`/`--negatives` to `run_eval.py`
+
+**Why:** about to run the frontier-tier slot for real (`anthropic/claude-opus-5`,
+negative cases only, per `docs/MODEL_BATTERY_PLAN.md`'s constraint that a
+full frontier battery costs more than the course allowance). Two gaps stood
+in the way: no way to select "negative cases only" from the CLI, and no way
+to point at a live model without hand-editing `config.py`'s committed
+`BACKEND`/`MODEL` defaults - exactly the "remember to revert before
+committing" step that's caused friction all along.
+
+**The additions (`run_eval.py`, `harness.py`, `config.py`):**
+- `--backend live|scripted` and `--model <slug>` — override `config.BACKEND`
+  / `config.MODEL` for THIS invocation only, same pattern as the existing
+  `--mode`. Never writes back to `config.py`, so there is nothing to revert
+  before committing.
+- `--negatives` — runs only cases whose expected decision is `escalate` /
+  `request_information` (`harness.is_negative`, renamed from the module-
+  private `_is_negative` so `run_eval.py` can reuse the same definition
+  instead of a second copy). Ignores `SCRIPTS` membership, since a live run
+  doesn't need a script.
+- `config.PRICES` now has `anthropic/claude-opus-5`: (5.00, 25.00) — the
+  price already quoted in `docs/MODEL_BATTERY_PLAN.md`, checked 2026-09-18.
+
+**A bug caught before it shipped:** the first version of `--backend`
+triggered a false `!! STALE BYTECODE !!` warning - `config.summary()`'s
+staleness check compares the in-memory value against what's literally
+written in `config.py`'s source text, which is *exactly* what a deliberate
+CLI override also looks like. Added `config.CLI_OVERRIDES`, a set of field
+names the running flags have knowingly changed; the staleness check now
+skips any field in that set. Caught by actually running
+`--backend live --model anthropic/claude-opus-5` and seeing the false
+warning fire, not by inspection.
+
+**Verified:**
+- `--backend live --model ... --mode model`: banner shows the override
+  correctly, no stale-bytecode warning.
+- Plain run, no flags: unchanged, still 118/118.
+- `--negatives --mode rules` and `--negatives --mode model`: **102/102
+  trials, 100%** both (34 of 50 cases are negative; negatives run 3 trials
+  each per D4, so 34×3 = 102).
+- `--all --mode rules` / `--all --mode model`: **118/118** both, unaffected.
+
+**Still needed before this actually runs against `claude-opus-5`:** the
+runner's own `OPENROUTER_API_KEY`, exported in their own shell, never in a
+file or committed - see `docs/MODEL_BATTERY_PLAN.md` item 1.
+
+---
+
 ## 2026-09-18 — Live run crashed on `deepseek/deepseek-chat-v3.1`: `TypeError` in `_parse_move`
 
 **Reported by:** a teammate's first live `--all` run (`BACKEND=live`,

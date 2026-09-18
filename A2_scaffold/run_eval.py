@@ -8,14 +8,34 @@ PE6201 · A2 scaffold — ENTRY POINT
     python3 run_eval.py --prompt     print what the model is told, and stop
     python3 run_eval.py --mode rules   force DECISION_MODE for this run only
     python3 run_eval.py --mode model   (does not edit config.py)
+    python3 run_eval.py --backend live force BACKEND for this run only
+    python3 run_eval.py --model <slug> force MODEL for this run only
+    python3 run_eval.py --negatives    only negative-outcome cases (escalate /
+                                       request_information) - the frontier-tier
+                                       convention in docs/MODEL_BATTERY_PLAN.md
     python3 run_eval.py --auto-approve simulate approval - see below
 
 THIS IS WHAT A MARKER RUNS. Clone, `python3 run_eval.py`, numbers come
 back. No key, no network, no arguments. If that does not work on a
 clean machine, D5(a) has failed and Technical Execution is capped.
---mode is an override for THIS invocation, never a requirement - the
-default run with no flags uses whatever config.DECISION_MODE already
-says, which is exactly what a marker's plain `python3 run_eval.py` does.
+--mode/--backend/--model are overrides for THIS invocation, never a
+requirement - none of them write back to config.py, so nobody's clone
+ends up in a different state than they left it. This is what lets your
+battery slot run without ever hand-editing (and having to remember to
+revert) the committed BACKEND="scripted" / MODEL="openai/gpt-4o-mini"
+defaults. A marker's plain `python3 run_eval.py` with no flags uses
+whatever config.py already says.
+
+Full example for a frontier-tier battery slot (negatives only, own key
+already exported, price already added to config.PRICES):
+    python3 run_eval.py --backend live --model anthropic/claude-opus-5 \
+        --mode model --negatives --auto-approve
+
+--negatives does not need --auto-approve to be safe: a negative case's
+correct decision is never "book", so if the model gets it wrong the
+route-consistency guardrail blocks any book_slot attempt before the
+approval gate is even reached (docs/CHANGELOG.md has the trace for this).
+--auto-approve only matters when a run can legitimately reach book_slot.
 
 --auto-approve IS ONLY FOR THIS HARNESS, NOT A PRODUCTION SETTING. The
 scripted backend already auto-approves internally, so this flag does
@@ -44,13 +64,13 @@ import sys
 
 import config
 from backends import SCRIPTS
-from harness import load_cases, load_key, report, run_set
+from harness import is_negative, load_cases, load_key, report, run_set
 
 
 def main(argv):
-    # --mode overrides config.DECISION_MODE for THIS run only - it never
-    # writes back to config.py, so nobody's clone ends up in a different
-    # state than they left it. Only meaningful for Problem B.
+    # --mode / --backend / --model each override ONE config value for
+    # THIS run only - none of them write back to config.py, so nobody's
+    # clone ends up in a different state than they left it.
     rest = list(argv[1:])
     if "--mode" in rest:
         i = rest.index("--mode")
@@ -63,6 +83,33 @@ def main(argv):
             print("\n  --mode must be 'rules' or 'model', not %r\n" % value)
             return 1
         config.DECISION_MODE = value
+        config.CLI_OVERRIDES.add("DECISION_MODE")
+        del rest[i:i + 2]
+
+    if "--backend" in rest:
+        i = rest.index("--backend")
+        try:
+            value = rest[i + 1]
+        except IndexError:
+            print("\n  --backend needs a value: scripted or live\n")
+            return 1
+        if value not in ("scripted", "live"):
+            print("\n  --backend must be 'scripted' or 'live', not %r\n" % value)
+            return 1
+        config.BACKEND = value
+        config.CLI_OVERRIDES.add("BACKEND")
+        del rest[i:i + 2]
+
+    if "--model" in rest:
+        i = rest.index("--model")
+        try:
+            value = rest[i + 1]
+        except IndexError:
+            print("\n  --model needs a value: an OpenRouter model slug, "
+                  "e.g. anthropic/claude-opus-5\n")
+            return 1
+        config.MODEL = value
+        config.CLI_OVERRIDES.add("MODEL")
         del rest[i:i + 2]
 
     print()
@@ -121,7 +168,15 @@ def main(argv):
         return 0 if results[0]["passed"] else 1
 
     # ---- the set ------------------------------------------------------
-    if "--all" in flags:
+    if "--negatives" in flags:
+        key = load_key()
+        cases = [c for c in load_cases() if c in key and is_negative(key[c])]
+        print("\n  Running NEGATIVE cases only (%d of %d total) - the"
+              % (len(cases), len(load_cases())))
+        print("  frontier-tier convention in docs/MODEL_BATTERY_PLAN.md.")
+        print("  Does not check SCRIPTS: on BACKEND=live every case runs")
+        print("  regardless of whether it has a script.")
+    elif "--all" in flags:
         cases = load_cases()
         print("\n  Running EVERY case in the work queue (%d)." % len(cases))
         print("  Cases with no script will stop the run - that is the")
@@ -146,6 +201,7 @@ def main(argv):
 
     with open("results.json", "w", encoding="utf-8") as fh:
         json.dump({"config": config.summary(), "auto_approve": auto_approve,
+                   "negatives_only": "--negatives" in flags,
                    "summary": summary,
                    "results": [{k: v for k, v in r.items()} for r in results],
                    "judgement_queue": queue}, fh, indent=2, default=str)

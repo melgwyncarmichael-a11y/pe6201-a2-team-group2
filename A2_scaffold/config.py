@@ -128,6 +128,8 @@ def data_root():
 # ─────────────────────────────────────────────────────────────────────
 PRICES = {
     "openai/gpt-4o-mini": (0.10, 0.40),   # (price_in, price_out) per 1M tokens
+    "anthropic/claude-opus-5": (5.00, 25.00),  # checked 2026-09-18, see
+                                                # docs/MODEL_BATTERY_PLAN.md
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
 }
 
@@ -148,6 +150,13 @@ def price_for(model):
             "  or guess; that is exactly the mistake D6 is marked on.\n"
             % model)
     return PRICES[model]
+
+
+# Field names run_eval.py's --backend/--mode/--model flags have deliberately
+# overridden for THIS run only. _stale_bytecode_warning() below skips these -
+# a CLI override is SUPPOSED to disagree with config.py's source text, and
+# that is not the same failure as Python silently reusing a cached copy.
+CLI_OVERRIDES = set()
 
 
 def _stale_bytecode_warning():
@@ -172,6 +181,8 @@ def _stale_bytecode_warning():
         return ""
     out = []
     for name, live in (("PROBLEM", PROBLEM), ("BACKEND", BACKEND)):
+        if name in CLI_OVERRIDES:
+            continue
         m = re.search(r'^%s\s*=\s*"([^"]*)"' % name, src, re.M)
         if m and m.group(1) != live:
             out.append("%s is %r in config.py but %r in memory"
