@@ -28,8 +28,10 @@ way — only the D5(b) live battery needs an API key.
 | See what data was added and the bug that surfaced | `docs/DATA_NOTES.md` |
 | See notable code fixes (who reported, what changed, how it was verified) | `docs/CHANGELOG.md` |
 | See the live-battery model/tier plan and sign up for a slot | `docs/MODEL_BATTERY_PLAN.pdf` |
+| See the actual rules-vs-model measured result (78.0% vs 37.3%, and why the gap is mostly labelling, not reasoning) | `docs/RULES_VS_MODEL_RESULTS.pdf` |
 | Pick rule-based vs. model-based interactively | `python3 A2_scaffold/choose_mode.py` |
 | Compare a rules-mode run against a model-mode run (pass rate, cost, route-mismatch count) | `python3 A2_scaffold/compare_modes.py results_rules_*.json results_model_*.json` |
+| Run your D5(b) battery slot (smoke-tests first, stops before full spend if anything looks wrong) | `python3 A2_scaffold/run_battery_slot.py <your-model-slug>` |
 
 ## Layout
 
@@ -44,6 +46,7 @@ A2_scaffold/            the agent, tools, guardrails, harness, prompt, entry poi
   run_eval.py           entry point — what a marker runs
   choose_mode.py        guided rules/model picker for the team
   compare_modes.py      reads two results.json files, prints the rules-vs-model table
+  run_battery_slot.py   smoke-test + full battery for one D5(b) model, in one command
   demo_loop_failure.py  D7's method, worked once
   TEAM_RUN_GUIDE.ipynb  hands-on run guide
 A2_reference_data/      fixtures, generators, answer key, integrity checker
@@ -65,8 +68,11 @@ Scripted backend: **all 50 labelled cases** (15 shipped + 35 added, across the
 team) have a script and run for free. That's **118 graded trials** (negative
 cases run 3×), all passing, in both decision modes. Every label independently
 cross-checked against `resolve_routing`'s logic, not just checked for
-existence. The live battery (D5b) and the rules-vs-model comparison are
-underway — see `docs/MODEL_BATTERY_PLAN.md`. The guardrail checklist (D3b) is
-built (`D3_guardrails-Cao Xiaohan/`). The judgement check (D4) is not
-started — see the "what's still open" sections in `docs/DATA_NOTES.md`
-and the run guide.
+existence. The rules-vs-model comparison is **done** (`openai/gpt-4o-mini`,
+live, full set, both modes — see `docs/RULES_VS_MODEL_RESULTS.pdf`). The
+D5(b) cross-model battery has its frontier slot done (`claude-opus-5`,
+`REF-6007`, see `docs/MODEL_BATTERY_PLAN.pdf`) with 5 cheap/mid-tier slots
+still open for the team. The guardrail checklist (D3b) is built
+(`D3_guardrails-Cao Xiaohan/`). The judgement check (D4) is not started —
+see the "what's still open" sections in `docs/DATA_NOTES.md` and the run
+guide.

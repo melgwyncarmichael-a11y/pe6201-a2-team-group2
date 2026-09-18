@@ -98,7 +98,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             if iterations > config.MAX_TURNS + 2:
                 raise GuardrailStop("step_cap", "loop did not terminate")
 
-            move = backend.next_move(transcript)
+            move = _normalize_move(backend.next_move(transcript))
             ti, to = backend.token_estimate(transcript)
             tokens_in, tokens_out = tokens_in + ti, tokens_out + to
             guards.check_budget(tokens_in + tokens_out)
@@ -129,7 +129,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             # Only calls INDEPENDENT of each other belong in one turn.
             # A dependency chain cannot be shortened by running things at
             # once - that is why Problem B saves less than Problem A.
-            calls = move.get("calls") or [(move["tool"], move["args"])]
+            calls = move["calls"]  # _normalize_move guaranteed this shape
             observations = []
 
             for name, args in calls:
@@ -162,9 +162,25 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             # modes, the moment both facts it needs are available - never
             # before, since it would be wrong to guess at a duplicate check
             # with no patient data yet. See config.DECISION_MODE.
+            #
+            # context.get(name) - not "name in context" - on purpose.
+            # get_referral/check_referral_criteria/lookup_patient are all
+            # documented to return None when the id/specialty they were
+            # called with doesn't exist (a live model can call a real
+            # tool with a WRONG value, not just a wrong shape - tools.call()
+            # already handles a wrong shape). The key is still set in
+            # context either way (context[name] = result runs
+            # unconditionally), so "in context" is true even when the
+            # value is None. Seen live (deepseek/deepseek-chat-v3.1):
+            # check_referral_criteria(specialty=..., referral_id=...)
+            # returned None, and resolve_routing() crashed on
+            # criteria.get(...) - an AttributeError on 'NoneType', not a
+            # gradeable record. A truthy check on the VALUE catches this;
+            # a key-existence check does not.
             if (problem == "B" and resolved is None
-                    and "check_referral_criteria" in context
-                    and "lookup_patient" in context):
+                    and context.get("get_referral")
+                    and context.get("check_referral_criteria")
+                    and context.get("lookup_patient")):
                 resolved = tools.resolve_routing(
                     context["get_referral"]["specialty"],
                     context["check_referral_criteria"],
@@ -221,3 +237,37 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
 def _short(value, n=64):
     s = repr(value)
     return s if len(s) <= n else s[:n - 1] + "…"
+
+
+def _normalize_move(move):
+    """A live model's reply can be syntactically valid JSON and still be
+    shaped wrong - missing 'tool'/'args', a 'calls' entry that isn't a
+    [name, args] pair (a model unfamiliar with this exact convention
+    might reasonably send {"tool": ..., "args": ...} objects instead of
+    ["tool", {...}] arrays), or args that aren't a JSON object at all.
+    Left unchecked, extracting calls from a move like that raises
+    KeyError/ValueError/TypeError straight out of the loop below and
+    crashes the WHOLE RUN, not just this move - the same failure class as
+    the _parse_move and tools.call() fixes (see docs/CHANGELOG.md,
+    2026-09-18). Normalise here into the SAME escalate shape _parse_move
+    already uses for unparseable JSON, so one downstream code path -
+    "if 'final' in move" - handles both kinds of failure identically.
+    """
+    if "final" in move:
+        if isinstance(move["final"], dict):
+            return move
+        return {"final": {"decision": "escalate",
+                          "reason": "model's 'final' was not a JSON object "
+                                    "(got %s)" % type(move["final"]).__name__},
+                "thought": (move.get("thought", "") + " [malformed final]").strip()}
+    try:
+        calls = move.get("calls") or [(move["tool"], move["args"])]
+        calls = [(name, args) for name, args in calls]
+        if not all(isinstance(args, dict) for _, args in calls):
+            raise TypeError("a call's args was not a JSON object")
+    except (KeyError, ValueError, TypeError) as e:
+        return {"final": {"decision": "escalate",
+                          "reason": "model returned a malformed action - %s" % e},
+                "thought": (move.get("thought", "") + " [malformed move]").strip()}
+    move["calls"] = calls
+    return move

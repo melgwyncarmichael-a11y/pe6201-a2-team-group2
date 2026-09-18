@@ -7,6 +7,280 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Wrong specialty/referral value (not shape) crashed resolve_routing() with AttributeError
+
+**Reported by:** a teammate running `deepseek/deepseek-chat-v3.1` live
+(`decision_mode=model`, GitHub Codespaces):
+
+```
+File "tools.py", line 311, in resolve_routing
+    if criteria.get("red_flag_term"):
+AttributeError: 'NoneType' object has no attribute 'get'
+```
+
+**Root cause:** `get_referral`, `check_referral_criteria`, and
+`lookup_patient` are all documented to return `None` when called with an
+id/specialty that doesn't exist - a DIFFERENT failure mode from today's
+earlier bad-argument-SHAPE fix (`tools.call()`'s `TypeError` catch,
+`docs/CHANGELOG.md` above): here the argument shape is fine, the VALUE
+is just wrong (a live model calling a real tool with a hallucinated or
+mistyped specialty/referral_id). `agent.py`'s trigger for computing
+`resolve_routing()` checked `"check_referral_criteria" in context` -
+key EXISTENCE, not value truthiness. `context[name] = result` runs
+unconditionally, so the key is present even when the tool legitimately
+returned `None`. `resolve_routing()` then received `criteria=None` and
+crashed on `criteria.get(...)` - and the same call site also indexes
+`context["get_referral"]["specialty"]` with no guard at all, a second
+crash risk from the same root cause.
+
+**The fix (`agent.py`):** the trigger condition now uses
+`context.get(name)` (truthy check) for all three dependencies -
+`get_referral`, `check_referral_criteria`, `lookup_patient` - instead of
+key-existence checks. When any of them is `None`, `resolve_routing()` is
+simply not called this turn and `resolved` stays `None`, the same
+graceful state the rest of the codebase already handles everywhere
+(`check_route_consistency`, `note_mismatch` both already tolerate
+`resolved=None`). `tools.resolve_routing()` itself is untouched - its
+docstring's "FAILS WHEN never" claim is true again now that the caller
+actually respects the contract of only calling it with real data.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Reproduced the exact reported failure directly:
+  `tools.check_referral_criteria('NOTAREALSPECIALTY', 'REF-5590')`
+  returns `None` (confirmed, not simulated); confirmed the new guard
+  condition evaluates to `False` for that context instead of proceeding.
+- Full end-to-end `run_case()` simulation with a mocked live backend that
+  reproduces the exact sequence (valid `get_referral`, a
+  `check_referral_criteria` call with a hallucinated specialty returning
+  `None`, valid `lookup_patient`, then conclude): completes cleanly,
+  `resolved_routing: null` in the record, no crash.
+
+---
+
+## 2026-09-18 — Reversed today's earlier "leave it as a hard crash" call: unknown-tool KeyError now caught too
+
+**What happened:** the very judgement call flagged in this file a few
+entries below ("deliberately NOT changed... a live model can now
+genuinely hallucinate a nonexistent tool name too") turned real within
+the hour. The `--mode model --all` run on `openai/gpt-4o-mini` crashed:
+
+```
+KeyError: "No tool named 'request_information' for Problem B.
+           Available: as_of, book_slot, check_referral_criteria,
+           get_clinic_slots, get_referral, lookup_patient"
+```
+
+The model confused a DECISION VALUE (`request_information` is one of the
+three valid outcomes) with a TOOL NAME and tried to call it. Not a
+one-case loss either: the run's own shell pipeline was
+`run_eval.py ...; mv results.json results_model_gpt4o-mini.json` with a
+bare newline, not `&&`, between them - when `run_eval.py` crashed and
+never wrote `results.json`, `mv` still ran, found nothing to move, failed
+silently, and left the PREVIOUS (pre-JSON-fix) `results_model_gpt4o-mini.json`
+sitting there untouched. `compare_modes.py` then read that stale file and
+reported a confident, wrong "0% pass rate" for a run that never actually
+happened - the exact "confident, wrong, unremarkable answer" failure mode
+`config.py`'s own stale-bytecode docstring warns about, just from a
+different mechanism. Caught by comparing file mtimes
+(`results_model_gpt4o-mini.json` was 25 minutes older than
+`results_rules_gpt4o-mini.json`, and its token totals matched the
+pre-fix run byte-for-byte) - the pass rate alone gave no hint anything
+was stale.
+
+**The fix (`tools.py`, `call()`):** the unknown-tool `KeyError` is now
+caught the same way as the bad-argument-shape `TypeError` already was -
+returns `{"error": "unknown_tool", "detail": ...}` instead of raising.
+One consistent policy: any live-model tool-call shape that's wrong (bad
+name, bad arguments) degrades to a gradeable observation, never a crash.
+
+**Process note, not a code fix:** chain live-run shell commands with
+`&&`, not bare newlines - `run_eval.py ... && mv results.json ...`  - so
+a crash stops the pipeline instead of letting `mv` silently succeed on
+stale leftover data from a previous run.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Reproduced the exact reported call
+  (`tools.call('B', 'request_information', {'reason': 'test'})`) directly:
+  now returns the gradeable error dict instead of raising.
+
+---
+
+## 2026-09-18 — Proactive audit: two more move-shape crashes, found before any model hit them
+
+**Why checked now:** after fixing three separate "untrusted live-model
+output crashes the whole run" bugs today (`_parse_move`'s non-string
+content, `_live_call`'s missing `choices`, `tools.call()`'s bad tool
+arguments), audited the rest of `agent.py`'s move-handling for the same
+failure class before the other 5 battery models hit it one incident at a
+time. Found two more, neither yet reported live - caught by direct
+testing, not a crash report.
+
+**1. A `calls` entry that isn't a `[name, args]` pair.**
+`calls = move.get("calls") or [(move["tool"], move["args"])]` then
+`for name, args in calls:` assumed every entry unpacks cleanly into
+exactly two values. A model sending `{"calls": [{"tool": "get_referral",
+"args": {...}}]}` - JSON objects instead of `["tool", {...}]` arrays, an
+easy mistake for a model unfamiliar with this exact convention - or any
+`args` that isn't a JSON object, would raise `KeyError`/`ValueError`
+straight out of the loop.
+
+**2. A `final` value that isn't a JSON object.**
+`record = dict(move["final"])` assumed `move["final"]` was always a
+dict. `{"final": "just a string reason"}` or `{"final": null}` - both
+syntactically valid JSON - raise `ValueError`/`TypeError` from `dict()`
+itself.
+
+**The fix (`agent.py`):** new `_normalize_move()`, called immediately on
+every `backend.next_move()` result. Validates both the `calls` shape and
+the `final` shape; anything malformed becomes the SAME escalate shape
+`_parse_move()` already uses for unparseable JSON, so one downstream code
+path (`if "final" in move`) handles every kind of malformed live-model
+output identically - a gradeable record, never a crash.
+
+**One thing deliberately NOT changed at the time:** `tools.call()`'s
+`KeyError` for an unknown tool NAME still crashed the whole run - its own
+docstring said that was intentional. Flagged here as a judgement call
+about intended behaviour, not an oversight - **reversed within the hour**
+once it happened for real; see the entry above this one.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Seven direct `_normalize_move()` cases: well-formed `calls` passes
+  through unchanged; well-formed `final` passes through unchanged; missing
+  `calls`/`tool`/`args` → gradeable escalate; `tool` without `args` →
+  gradeable escalate; dict-shaped `calls` entries → gradeable escalate;
+  non-dict `args` → gradeable escalate; single `tool`/`args` shape (no
+  `calls` key) still normalizes correctly.
+- Three direct `final`-shape cases: string `final` → gradeable escalate;
+  `null` `final` → gradeable escalate; well-formed `final` untouched.
+
+---
+
+## 2026-09-18 — A malformed tool call from a live model crashed the whole run, not just one case
+
+**Reported by:** a teammate running `deepseek/deepseek-chat-v3.1` live
+(`decision_mode=model`, GitHub Codespaces), who hit an uncaught traceback
+partway through their battery:
+
+```
+File ".../tools.py", line 755, in call
+    return table[name](**args)
+TypeError: check_referral_criteria() missing 1 required positional argument: 'specialty'
+```
+
+**Root cause:** `tools.call()` dispatched `table[name](**args)` with no
+validation at all. `check_referral_criteria(specialty, referral_id)`
+requires both arguments; the model's tool call only supplied
+`referral_id`. Python's own `TypeError` propagated all the way up through
+`agent.py` and `harness.run_set()` uncaught, killing the entire Python
+process - not just the one case being run, but every case still queued
+after it in that person's battery slot.
+
+**Same category as two earlier fixes today** (the `None`-content crash in
+`_parse_move` and the missing-`choices` crash in `_live_call`): untrusted
+output from a live model reaching a boundary that assumed well-formed
+input. `get_referral`/`check_referral_criteria`/etc. already model KNOWN
+soft failures as returned data (`"RETURNS NONE when the referral ...
+does not exist"`); a malformed ARGUMENT SHAPE from the model is the same
+kind of untrusted input, just caught one layer earlier, before the tool
+function's own body ever runs.
+
+**The fix (`tools.py`, `call()`):** wraps `table[name](**args)` in
+`try/except TypeError`, returning `{"error": "bad_arguments", "detail":
+"<call> - <what Python said>"}` instead of letting the exception escape.
+The agent sees this as an ordinary observation, the same as any other
+tool result - the record stays gradeable instead of the whole run
+vanishing into a traceback. The deliberate `KeyError` for an unknown tool
+NAME is untouched - that one stays a hard failure on purpose (see the
+function's own docstring: a silent no-op there would hide a real
+agent/tool-registry bug).
+
+**Verified:**
+- Scripted regression: **118/118, 100%**, unaffected.
+- Reproduced the exact reported call
+  (`tools.call('B', 'check_referral_criteria', {'referral_id': 'REF-5590'})`)
+  directly: now returns the gradeable error dict instead of raising.
+- Confirmed the unknown-tool-name `KeyError` still fires exactly as
+  before - this fix narrows the catch to `TypeError` only, not a blanket
+  except.
+
+---
+
+## 2026-09-18 — `openai/gpt-4o-mini` narrated in prose instead of JSON; 0-47.5% pass rate was a formatting bug, not a decision-quality result
+
+**Found by:** the team's first full-battery live run of the rules-vs-model
+comparison (`--backend live --model openai/gpt-4o-mini --all
+--auto-approve`, both `--mode rules` and `--mode model`, 118 trials each).
+Rules mode: 56/118 (47.5%). Model mode: **0/118 (0%)**. Every single one of
+118 trials in the `stopped_by` field was `null` - no guardrail fired,
+worst-case turns was 2 in both runs (nowhere near the 8-turn cap) - so this
+was not a loop failure or a budget/step-cap issue.
+
+**Root cause, confirmed with a single-case verbose live re-run
+(`REF-5590`, `--mode model`):** the model's raw response was plain
+English, not JSON at all:
+
+```
+unparseable: Escalating due to the red-flag term "sudden visual loss" in the clinical su[mmary]...
+```
+
+`gpt-4o-mini` was narrating its reasoning as prose instead of emitting the
+required `{"thought": ..., "final": {...}}` envelope - despite the system
+prompt already saying "Reply with JSON and nothing else." Claude Opus 5
+complied reliably on the same prompt structure (see the REF-6007 entry
+below); a cheaper, less instruction-tuned model did not. `_parse_move()`
+correctly caught this as unparseable and returned a gradeable escalate
+record rather than crashing (that safety net, added earlier today, is
+exactly why this degraded to a bad number instead of another crash) - but
+a 0%/47.5% pass rate driven by JSON-formatting failures says nothing
+about whether rules mode actually beats model mode. **This data must not
+be used for the D0/D6 argument.**
+
+**Considered and rejected:** forcing OpenRouter's `response_format:
+{"type": "json_schema", ...}` structured-output mode in `_live_call()`.
+Checked OpenRouter's own docs first - support is "per endpoint... can
+change over time," and an unsupported model **hard-fails the request**
+rather than degrading gracefully. `_live_call()` is the one function every
+team member's battery model runs through; forcing a parameter that could
+silently break a *different* model's slot weeks from now was not worth
+the risk for a fix this narrow.
+
+**The fix, both changes safe for every model:**
+- `prompt.py` (`_HOW_TO_ANSWER`) - strengthened from "Reply with JSON and
+  nothing else" to explicit instructions: first character must be `{`,
+  last must be `}`, no prose, no markdown fences, put reasoning inside
+  `"thought"` rather than writing it as plain text.
+- `backends.py` (`LiveBackend.next_move()`) - one self-correction retry
+  when a response comes back unparseable: re-sends the conversation plus
+  the model's own failed reply and a blunt "that wasn't valid JSON, try
+  again" instruction. If the retry parses, its move is used; if both
+  attempts fail, the ORIGINAL failure record is kept (not the retry's),
+  so `thought` shows what the model actually said on its real attempt.
+  Both calls' token usage are summed into cost - a retry is real spend
+  and must be counted, not hidden.
+- `_parse_move()` now returns an internal `"_unparseable": True` sentinel
+  on failure instead of relying on string-matching its own error message
+  to detect the failure case.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected
+  (`ScriptedBackend` never calls `_live_call`/`_parse_move`).
+- Mocked `LiveBackend.next_move()` with a fake `_live_call` returning
+  unparseable prose then valid JSON: retry fires, the parsed retry move is
+  returned, and usage correctly sums both calls (150 in / 35 out from two
+  calls of 100+50 / 20+15).
+- Mocked both calls returning unparseable text: the ORIGINAL failure
+  record is kept (not the retry's), and usage still sums both calls
+  (200 in / 40 out).
+
+**Still needed:** re-run the full rules-vs-model comparison on
+`gpt-4o-mini` with this fix in place before trusting any pass-rate number
+from it. Update this entry (or add a new one) with the real result.
+
+---
+
 ## 2026-09-18 — `openai/gpt-4o-mini`'s price in `config.PRICES` was stale
 
 **Why checked now:** about to spend real money running the rules-vs-model

@@ -741,15 +741,33 @@ DESCRIPTORS = {
 def call(problem, name, args):
     """Dispatch a tool call by name.
 
-    WATCH OUT      unknown tool names fail LOUDLY. A silent no-op here
-                   would produce a run that looks fine and decided
-                   nothing on evidence it never gathered - the most
-                   expensive kind of bug in this assignment, because
-                   nothing about the output says anything went wrong.
+    WATCH OUT      an unknown tool name USED TO fail loudly here (a bare
+                   KeyError) on the theory that a silent no-op would hide
+                   a real agent/registry bug. Reality, seen live
+                   (openai/gpt-4o-mini, decision_mode=model): the model
+                   confused a DECISION VALUE ("request_information" is
+                   one of the three valid outcomes) with a TOOL NAME and
+                   tried to call it - the same live-model-hallucination
+                   risk as a bad argument shape, just one layer earlier.
+                   The KeyError took the ENTIRE battery run down - not
+                   just that case, every case queued after it, AND it
+                   silently corrupted the next step too: the caller's
+                   `mv results.json ...` picked up a STALE file from a
+                   previous run instead of erroring, so a crashed run
+                   looked like a completed one with a real (wrong) pass
+                   rate. Caught here and turned into an observation, the
+                   same as a bad argument shape below - a human or the
+                   agent can see "unknown_tool" and know exactly what
+                   happened, instead of losing the whole run to it.
     """
     table = REGISTRY[problem]
     if name not in table:
-        raise KeyError(
-            "No tool named %r for Problem %s. Available: %s"
-            % (name, problem, ", ".join(sorted(table))))
-    return table[name](**args)
+        return {"error": "unknown_tool",
+                "detail": "No tool named %r for Problem %s. Available: %s"
+                          % (name, problem, ", ".join(sorted(table)))}
+    try:
+        return table[name](**args)
+    except TypeError as e:
+        return {"error": "bad_arguments",
+                "detail": "%s(%s) - %s"
+                          % (name, ", ".join("%s=%r" % kv for kv in args.items()), e)}

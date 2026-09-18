@@ -1200,7 +1200,32 @@ class LiveBackend:
             messages.append({"role": entry["role"], "content": entry["content"]})
         raw, usage = _live_call(messages)
         self._last_usage = usage
-        return _parse_move(raw)
+        move = _parse_move(raw)
+
+        # ONE self-correction retry when the model narrates in plain prose
+        # instead of the required JSON envelope - seen live on
+        # openai/gpt-4o-mini even with the system prompt already saying
+        # "JSON and nothing else". A short, blunt reminder recovers most
+        # of these without silently escalating a case the model actually
+        # got right. Both calls' usage count toward cost - a retry is
+        # real spend, not free, and D6 must reflect that.
+        if move.get("_unparseable"):
+            retry_messages = messages + [
+                {"role": "assistant", "content": raw if isinstance(raw, str) else ""},
+                {"role": "user",
+                 "content": "That reply was not valid JSON. Reply again with "
+                            "ONLY the JSON object - no prose, no explanation, "
+                            "no markdown fences. Start with { and end with }."},
+            ]
+            raw2, usage2 = _live_call(retry_messages)
+            self._last_usage = (usage[0] + usage2[0], usage[1] + usage2[1])
+            move2 = _parse_move(raw2)
+            if not move2.get("_unparseable"):
+                return move2
+            # Both attempts failed - keep the ORIGINAL failure record (not
+            # the retry's), so `thought` shows what the model actually
+            # said on its real first try, not a second failed nudge.
+        return move
 
     def token_estimate(self, transcript):
         """MEASURED, not estimated, despite the method name kept for
@@ -1231,13 +1256,15 @@ def _parse_move(text):
         return {"final": {"decision": "escalate",
                           "reason": "model returned no usable content "
                                     "(got %s instead of text)" % type(text).__name__},
-                "thought": "unparseable: response content was %r" % (text,)}
+                "thought": "unparseable: response content was %r" % (text,),
+                "_unparseable": True}
     try:
         return json.loads(text)
     except json.JSONDecodeError:
         return {"final": {"decision": "escalate",
                           "reason": "model did not return parseable JSON"},
-                "thought": "unparseable: %s" % text[:200]}
+                "thought": "unparseable: %s" % text[:200],
+                "_unparseable": True}
 
 
 def _live_call(messages):
