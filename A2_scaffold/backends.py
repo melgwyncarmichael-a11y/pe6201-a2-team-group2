@@ -1204,25 +1204,35 @@ class LiveBackend:
         self._last_usage = usage
         move = _parse_move(raw)
 
-        # ONE self-correction retry when the model narrates in plain prose
-        # instead of the required JSON envelope - seen live on
-        # openai/gpt-4o-mini even with the system prompt already saying
-        # "JSON and nothing else". A short, blunt reminder recovers most
-        # of these without silently escalating a case the model actually
-        # got right. Both calls' usage count toward cost - a retry is
-        # real spend, not free, and D6 must reflect that.
-        if move.get("_unparseable"):
+        # ONE self-correction retry when the model's reply is unusable -
+        # either not valid JSON at all (narrated prose instead), or valid
+        # JSON that forgot the required envelope (just {"thought": "..."}
+        # with no "final" or "calls"/"tool" - seen live on
+        # openai/gpt-4o-mini with the longer v1 descriptors,
+        # docs/CHANGELOG.md). Both are the same underlying problem from
+        # agent.py's point of view: nothing usable came back. A short,
+        # blunt reminder recovers most of these without silently
+        # escalating a case the model actually got right. Both calls'
+        # usage count toward cost - a retry is real spend, not free, and
+        # D6 must reflect that.
+        incomplete = _move_is_incomplete(move)
+        if move.get("_unparseable") or incomplete:
+            nudge = ("That reply was not valid JSON. Reply again with ONLY "
+                      "the JSON object - no prose, no explanation, no "
+                      "markdown fences. Start with { and end with }."
+                      if move.get("_unparseable") else
+                      "That reply was missing the required envelope. Wrap "
+                      "your decision in \"final\": {...} (or your tool call "
+                      "in \"calls\": [...]) - reply again with ONLY that "
+                      "JSON object.")
             retry_messages = messages + [
                 {"role": "assistant", "content": raw if isinstance(raw, str) else ""},
-                {"role": "user",
-                 "content": "That reply was not valid JSON. Reply again with "
-                            "ONLY the JSON object - no prose, no explanation, "
-                            "no markdown fences. Start with { and end with }."},
+                {"role": "user", "content": nudge},
             ]
             raw2, usage2 = _live_call(retry_messages)
             self._last_usage = (usage[0] + usage2[0], usage[1] + usage2[1])
             move2 = _parse_move(raw2)
-            if not move2.get("_unparseable"):
+            if not move2.get("_unparseable") and not _move_is_incomplete(move2):
                 return move2
             # Both attempts failed - keep the ORIGINAL failure record (not
             # the retry's), so `thought` shows what the model actually
@@ -1241,6 +1251,26 @@ class LiveBackend:
         D6 punishes.
         """
         return self._last_usage
+
+
+def _move_is_incomplete(move):
+    """True if a SYNTACTICALLY VALID JSON move is still missing the
+    envelope agent.py needs - neither 'final' nor a usable 'calls'/'tool'
+    shape. The retry-worthy sibling of _parse_move's `_unparseable` flag:
+    that one catches "not JSON at all"; this one catches "valid JSON, but
+    the model only sent {"thought": "..."} and forgot to wrap its actual
+    decision in "final"" - seen live (openai/gpt-4o-mini, v1 descriptors,
+    docs/CHANGELOG.md). Deliberately duplicated in miniature from
+    agent.py's _normalize_move rather than imported - agent.py imports
+    this module, so the reverse import would be circular, and this needs
+    only the narrow "is a retry worth trying" question, not the full
+    normalization agent.py does afterward regardless.
+    """
+    if not isinstance(move, dict):
+        return True
+    if "final" in move:
+        return False
+    return not ("calls" in move or ("tool" in move and "args" in move))
 
 
 def _parse_move(text):

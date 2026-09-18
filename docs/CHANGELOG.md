@@ -7,6 +7,54 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Extended the self-correction retry to cover valid JSON missing its envelope
+
+**Found by:** the v1-vs-v2 descriptor comparison's first smoke test
+(`openai/gpt-4o-mini`, `--mode model`, v1/pre-rewrite descriptors, run
+from an isolated git worktree). All three trials produced valid JSON -
+`json.loads()` didn't raise - but each one was just
+`{"thought": "Escalating due to the red-flag term..."}`, with no
+`"final"` or `"calls"`/`"tool"` key at all. `_move_is_incomplete` didn't
+exist yet; `agent.py`'s `_normalize_move()` correctly caught this as a
+gradeable `"malformed action"` record (not a crash - that hardening
+already existed), but the earlier self-correction retry never fired,
+because it only checks `_parse_move`'s `_unparseable` flag, which is
+about JSON *parsing* failing, not "valid JSON missing the required
+shape." Different failure, same practical effect: nothing usable came
+back, and no retry was attempted.
+
+**Possible finding in its own right, not just a bug:** this showed up
+specifically on v1's longer, pre-rewrite descriptors - plausible evidence
+that a longer prompt makes format compliance *less* reliable, which is
+directly relevant to the D2(b) argument this whole experiment exists to
+make. Worth keeping in mind when writing up the v1-vs-v2 comparison,
+separately from the fix below.
+
+**The fix (`backends.py`):** new `_move_is_incomplete(move)` - true when
+a move has neither `"final"` nor a usable `"calls"`/`"tool"`+`"args"`
+shape. `LiveBackend.next_move()`'s retry condition now fires on
+`_unparseable` OR `_move_is_incomplete`, with a nudge worded for
+whichever actually happened (invalid JSON vs. missing envelope).
+Deliberately duplicated in miniature from `agent.py`'s
+`_normalize_move()` rather than imported - `agent.py` imports this
+module, so the reverse import would be circular, and the retry only
+needs the narrow "is this worth one more try" question, not the full
+normalization `agent.py` does regardless afterward.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Six direct `_move_is_incomplete()` cases: bare `{"thought"}` → `True`;
+  `"final"` present → `False`; valid `"calls"` → `False`; valid
+  `"tool"`+`"args"` → `False`; `"tool"` without `"args"` → `True`;
+  non-dict input → `True`.
+- Mocked `next_move()`: an incomplete first reply followed by a
+  well-formed retry returns the retry's move, with usage correctly
+  summed from both calls.
+- Mocked both attempts incomplete: the ORIGINAL incomplete move is kept
+  (not the retry's), same convention as the JSON-parse retry.
+
+---
+
 ## 2026-09-18 — Missing price crashed a run silently past run_battery_slot.py's own safety check
 
 **My own mistake, not a teammate report:** verified `google/gemini-3.8-
