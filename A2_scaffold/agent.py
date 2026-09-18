@@ -55,7 +55,13 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
                           if n in tools.DESCRIPTORS],
         system_prompt=prompt.build_system_prompt(problem))
 
-    transcript = []      # what the model would see
+    # Seeded with the actual case id - otherwise the model has no way to
+    # know WHICH referral/claim it is looking at. The system prompt is
+    # generic (built once per problem, not per case); on the live backend
+    # this first message is the only place a real id ever reaches the
+    # model. Harmless on the scripted backend, which ignores transcript
+    # entirely and replays pre-written moves regardless of its content.
+    transcript = [{"role": "user", "content": "Case id: %s" % case_id}]
     evidence = []        # every tool actually called, in order
     context = {}         # tool name -> its result, so resolve_routing can
                           # be computed once the facts it needs are in

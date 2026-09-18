@@ -7,6 +7,66 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — CRITICAL: the live backend never told the model which case it was looking at
+
+**Found by:** the team's first-ever real live call to complete without
+crashing (`BACKEND=live`, `anthropic/claude-opus-5`, `REF-6007`). The
+result:
+
+```
+"decision": "escalate",
+"trigger": "referral_not_found",
+"reason": "get_referral('REF-0001') returned None — referral record
+            not found, so no protocol checks could be performed..."
+```
+
+`REF-0001` does not exist anywhere in the data. The case being run was
+`REF-6007`. The model invented a plausible-looking id and called
+`get_referral` with it.
+
+**Root cause:** `agent.py`'s `run_case()` built `transcript = []` and
+handed it straight to `backend.next_move(transcript)`. The system prompt
+(`prompt.build_system_prompt()`) is generic - assembled once per PROBLEM,
+never per case - and nothing else in the loop ever puts the actual
+`case_id` anywhere the model can read it. `get_referral`'s own descriptor
+says `"args": {"referral_id": "str, case ID"}` - it expects an id, but
+the model was never told what its id was. This is not case-specific: it
+would happen on **every single live call, for every case**, every time.
+
+**Why this went unnoticed until now:** the scripted backend ignores
+`transcript` entirely (`ScriptedBackend.next_move()`'s docstring says so
+explicitly - "a script does not react") and replays pre-written moves
+regardless of what's in it. All 118 scripted trials, in both decision
+modes, passed the whole time - scripted testing structurally could not
+have caught this, because it never exercises the code path that needed
+the case id. It could only ever surface on a real live call, and this
+was the first one to get far enough to reveal it.
+
+**The fix (`agent.py`):**
+```python
+transcript = [{"role": "user", "content": "Case id: %s" % case_id}]
+```
+replacing `transcript = []`. One line. Harmless on the scripted backend
+(still ignored); on the live backend it's now the first thing the model
+ever reads, before the system prompt's tool descriptors even matter.
+
+**Verified:**
+- Scripted, both decision modes, full 50-case set: **118/118, 100%**,
+  unchanged.
+- Live re-run of the exact case that surfaced this
+  (`--backend live --model anthropic/claude-opus-5 --mode model
+  REF-6007`) — **pending**, to be confirmed against a real call with the
+  fix in place. Update this entry once that's run.
+
+**Cost note:** the failed run above was not free - it was 3 real Opus 5
+API calls (`REF-6007` is a negative case; single-case runs still get 3
+trials per D4's `trials_for` rule) that could only ever return
+`referral_not_found`, regardless of model quality. Nobody should assume
+their own testing already reflects this fix until they've re-pulled and
+rerun.
+
+---
+
 ## 2026-09-18 — Added `--backend`/`--model`/`--negatives` to `run_eval.py`
 
 **Why:** about to run the frontier-tier slot for real (`anthropic/claude-opus-5`,

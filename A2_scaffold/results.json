@@ -1,5 +1,5 @@
 {
-  "config": "BACKEND=scripted  FREE, deterministic  |  PROBLEM=B  |  model=(no model)  |  cap=8 turns  |  autonomy=confirm  |  decision_mode=model",
+  "config": "BACKEND=scripted  FREE, deterministic  |  PROBLEM=B  |  model=(no model)  |  cap=8 turns  |  autonomy=confirm  |  decision_mode=rules",
   "auto_approve": false,
   "negatives_only": false,
   "summary": {
@@ -7,7 +7,7 @@
     "passed": 118,
     "pass_rate": 1.0,
     "median_turns": 2.0,
-    "cost_usd": 0.152748
+    "cost_usd": 0.176808
   },
   "results": [
     {
@@ -27,14 +27,14 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
-        "seconds": 0.001,
+        "cost_usd": 0.001872,
+        "seconds": 0.002,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -60,14 +60,14 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -93,14 +93,14 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -132,9 +132,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -144,7 +144,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -169,14 +169,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -201,14 +201,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -233,14 +233,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -271,9 +271,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -283,7 +283,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -314,9 +314,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -326,7 +326,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -357,9 +357,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -369,7 +369,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -394,14 +394,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -426,14 +426,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -458,14 +458,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -490,14 +490,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -522,14 +522,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -554,14 +554,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -586,14 +586,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -618,14 +618,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -650,14 +650,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -682,14 +682,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -714,14 +714,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -746,14 +746,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -779,9 +779,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -791,7 +791,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -817,9 +817,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -829,7 +829,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -855,9 +855,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -867,7 +867,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -892,9 +892,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -904,7 +904,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -929,9 +929,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -941,7 +941,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -966,9 +966,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -978,7 +978,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1003,9 +1003,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1015,7 +1015,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1040,9 +1040,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1052,7 +1052,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1077,9 +1077,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1089,7 +1089,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1114,14 +1114,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1146,14 +1146,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1178,14 +1178,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1216,9 +1216,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1228,7 +1228,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1259,9 +1259,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1271,7 +1271,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1302,9 +1302,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1314,7 +1314,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1340,9 +1340,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1352,7 +1352,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1378,9 +1378,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1390,7 +1390,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1416,9 +1416,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1428,7 +1428,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1453,14 +1453,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -1485,14 +1485,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -1517,14 +1517,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -1555,9 +1555,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1567,7 +1567,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1592,14 +1592,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1624,14 +1624,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1656,14 +1656,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1688,9 +1688,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1700,7 +1700,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1725,9 +1725,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1737,7 +1737,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1762,9 +1762,9 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1774,7 +1774,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1805,9 +1805,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1817,7 +1817,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1848,9 +1848,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1860,7 +1860,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1885,14 +1885,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -1917,14 +1917,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -1949,14 +1949,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -1987,9 +1987,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -1999,7 +1999,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2025,9 +2025,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -2037,7 +2037,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2063,9 +2063,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -2075,7 +2075,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2101,9 +2101,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -2113,7 +2113,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2144,9 +2144,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -2156,7 +2156,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2181,14 +2181,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2213,14 +2213,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2245,14 +2245,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2277,14 +2277,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2309,14 +2309,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2341,14 +2341,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2373,14 +2373,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2405,14 +2405,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2437,14 +2437,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2469,14 +2469,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2501,14 +2501,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2533,14 +2533,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2565,14 +2565,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2597,14 +2597,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2629,14 +2629,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2661,14 +2661,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -2693,14 +2693,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -2725,14 +2725,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -2757,14 +2757,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2789,14 +2789,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2821,14 +2821,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2859,9 +2859,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -2871,7 +2871,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2902,9 +2902,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -2914,7 +2914,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2939,14 +2939,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2971,14 +2971,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3003,14 +3003,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3036,9 +3036,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -3048,7 +3048,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3074,9 +3074,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -3086,7 +3086,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3112,9 +3112,9 @@
           "get_clinic_slots"
         ],
         "turns": 3,
-        "tokens_in": 14400,
+        "tokens_in": 16800,
         "tokens_out": 480,
-        "cost_usd": 0.001632,
+        "cost_usd": 0.001872,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -3124,7 +3124,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3149,14 +3149,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3181,14 +3181,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3213,14 +3213,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3245,14 +3245,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3277,14 +3277,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3309,14 +3309,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3341,14 +3341,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3373,14 +3373,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3405,14 +3405,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3437,14 +3437,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3469,14 +3469,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3501,14 +3501,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3539,9 +3539,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -3551,7 +3551,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3582,9 +3582,9 @@
           "book_slot"
         ],
         "turns": 4,
-        "tokens_in": 21000,
+        "tokens_in": 24000,
         "tokens_out": 600,
-        "cost_usd": 0.00234,
+        "cost_usd": 0.00264,
         "seconds": 0.0,
         "guardrails_fired": [
           {
@@ -3594,7 +3594,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3619,14 +3619,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3651,14 +3651,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3683,14 +3683,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3715,14 +3715,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3747,14 +3747,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3779,14 +3779,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3811,14 +3811,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -3843,14 +3843,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -3875,14 +3875,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -3907,14 +3907,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3939,14 +3939,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3971,14 +3971,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -4003,14 +4003,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -4035,14 +4035,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -4067,14 +4067,14 @@
           "lookup_patient"
         ],
         "turns": 2,
-        "tokens_in": 9000,
+        "tokens_in": 10800,
         "tokens_out": 360,
-        "cost_usd": 0.001044,
+        "cost_usd": 0.001224,
         "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "model",
+        "decision_mode": "rules",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
