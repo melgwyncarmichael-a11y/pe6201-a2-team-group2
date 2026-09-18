@@ -31,6 +31,7 @@ way — only the D5(b) live battery needs an API key.
 | See the actual rules-vs-model measured result (78.0% vs 37.3%, and why the gap is mostly labelling, not reasoning) | `docs/RULES_VS_MODEL_RESULTS.pdf` |
 | Pick rule-based vs. model-based interactively | `python3 A2_scaffold/choose_mode.py` |
 | Compare a rules-mode run against a model-mode run (pass rate, cost, route-mismatch count) | `python3 A2_scaffold/compare_modes.py results_rules_*.json results_model_*.json` |
+| Run your D5(b) battery slot (smoke-tests first, stops before full spend if anything looks wrong) | `python3 A2_scaffold/run_battery_slot.py <your-model-slug>` |
 
 ## Layout
 
@@ -45,6 +46,7 @@ A2_scaffold/            the agent, tools, guardrails, harness, prompt, entry poi
   run_eval.py           entry point — what a marker runs
   choose_mode.py        guided rules/model picker for the team
   compare_modes.py      reads two results.json files, prints the rules-vs-model table
+  run_battery_slot.py   smoke-test + full battery for one D5(b) model, in one command
   demo_loop_failure.py  D7's method, worked once
   TEAM_RUN_GUIDE.ipynb  hands-on run guide
 A2_reference_data/      fixtures, generators, answer key, integrity checker
