@@ -31,17 +31,31 @@ loop failures or budget/step caps.
 
 ## Do not stop at the headline number - it is misleading on its own
 
-Broke down all 74 failing `model`-mode trials by what actually mismatched:
+Broke down every failing trial in BOTH runs by what actually mismatched -
+not just `model` mode. **Correction (2026-09-18, caught the same day this
+was first written up):** the first version of this doc compared `model`
+mode's decision-level accuracy against `rules` mode's RAW pass rate,
+which happened to match numerically (both ~78%) by coincidence. That is
+not an apples-to-apples comparison. Computing `rules` mode's own
+decision-level breakdown properly:
 
-| Category | Count | What it means |
-|---|---|---|
-| Decision itself was wrong | **26** | A real reasoning miss - the agent concluded the wrong outcome. |
-| Decision right, trigger *label* wrong | **47** | e.g. `'sudden visual loss'` instead of the answer key's `'red_flag_term'` - same finding, different words. |
-| Decision right, booked slot wrong | **1** | Right call to book; wrong clinic/date/time. |
+| Category | `rules` | `model` | What it means |
+|---|---|---|---|
+| Decision itself was wrong | **12** | **26** | A real reasoning miss - the agent concluded the wrong outcome. |
+| Decision right, trigger *label* wrong | 13 | 47 | e.g. `'sudden visual loss'` instead of the answer key's `'red_flag_term'` - same finding, different words. |
+| Decision right, booked slot wrong | 1 | 1 | Right call to book; wrong clinic/date/time. |
+| **Decision-level accuracy** | **89.8%** (106/118) | **78.0%** (92/118) | Trigger-labelling mismatches set aside. |
 
-**If you set aside the trigger-labelling mismatches (where the decision
-itself was correct), `model` mode's real decision-level accuracy is
-44 + 47 + 1 = 92/118 = 78.0% - statistically identical to `rules` mode.**
+**`rules` mode has SOME trigger-labelling drift too** (13 trials) - even
+though `prompt.py`'s `RULES["B_rules"]` tells the model to echo
+`resolve_routing()`'s trigger string verbatim, `gpt-4o-mini` still
+occasionally paraphrases it instead of copying it exactly. Worth noting
+as its own small finding.
+
+**The real, correctly-compared gap: 89.8% vs 78.0%, an 11.8-point
+difference - real, but far smaller than the raw 78.0%-vs-37.3% headline
+numbers suggest**, and NOT "statistically identical" as this doc
+originally (incorrectly) claimed.
 
 ## Why the gap is mostly a labelling artifact, not a reasoning gap
 
@@ -61,14 +75,15 @@ what the `must_record` judgement-check items are for (see
 
 ## What this actually supports for the D0/D6 argument
 
-- **Rules mode's real, defensible advantage is reliability of exact
-  output and lower cost** - not better underlying reasoning.
-  `gpt-4o-mini` reasons to essentially the same decision either way; it
-  just doesn't know this assignment's specific trigger vocabulary unless
-  it's told.
-- **The 26 genuine reasoning misses (22% of all trials) are still real**
-  and worth a closer look in the report - these are `model` mode getting
-  the actual OUTCOME wrong, not just the label.
+- **Rules mode has a real, moderate decision-quality advantage (89.8% vs
+  78.0%, +11.8 points), not just a labelling-reliability one.** Handing
+  the model a pre-resolved answer to echo genuinely produces fewer wrong
+  DECISIONS, not only cleaner labels - `model` mode's 26 wrong decisions
+  vs `rules` mode's 12 is more than double.
+- **Exact-label reliability is a SEPARATE, larger advantage on top of
+  that**: 13 trigger-only misses in `rules` mode vs 47 in `model` mode.
+  Both effects are real and both matter for the argument - don't collapse
+  them into one claim.
 - **Cost favours rules mode too** ($0.1084 vs $0.1311) - a shorter,
   more directive prompt plus not needing to re-derive four gates from
   scratch.
@@ -87,10 +102,11 @@ what the `must_record` judgement-check items are for (see
 - **Not the cross-model battery.** This is the separate, single-model
   rules-vs-model comparison from `docs/MODEL_BATTERY_PLAN.md` §2 - do
   not present it as D5(b) cross-model evidence.
-- **Report BOTH numbers.** 37.3% (strict code check) and 78.0%
-  (decision-only, trigger-wording set aside) are both real and both
-  belong in the write-up - reporting only one tells a misleading story
-  in either direction.
+- **Report all four numbers, for both modes.** Raw pass rate (78.0%
+  rules / 37.3% model) and decision-level accuracy (89.8% rules / 78.0%
+  model) are all real and all belong in the write-up - reporting only
+  the raw numbers overstates the gap; reporting only decision-level
+  accuracy understates rules mode's advantage.
 
 ---
 
