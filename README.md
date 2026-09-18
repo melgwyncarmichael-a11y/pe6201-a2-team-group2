@@ -27,6 +27,7 @@ way — only the D5(b) live battery needs an API key.
 | See every test case, classified, and where the gaps are | `docs/TEST_CASE_MAP.md` |
 | See what data was added and the bug that surfaced | `docs/DATA_NOTES.md` |
 | See notable code fixes (who reported, what changed, how it was verified) | `docs/CHANGELOG.md` |
+| See the live-battery model/tier plan and sign up for a slot | `docs/MODEL_BATTERY_PLAN.pdf` |
 | Pick rule-based vs. model-based interactively | `python3 A2_scaffold/choose_mode.py` |
 
 ## Layout
