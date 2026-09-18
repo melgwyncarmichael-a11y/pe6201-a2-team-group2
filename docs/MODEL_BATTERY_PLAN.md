@@ -60,7 +60,7 @@ result couldn't be attributed to either one.
 |---|---|---|---|---|
 | OpenAI | `openai/gpt-5.6-luna` | $0.20 | $1.20 | Cheap |
 | DeepSeek | `deepseek/deepseek-v4.1-flash` | $0.15 | $0.60 | Cheap |
-| Mistral | `mistralai/mistral-small-2603` | $0.15 | $0.60 | Cheap (open-weight) |
+| Mistral | `mistralai/mistral-small-3.2-24b-instruct` | $0.075 | $0.20 | Cheap (open-weight) |
 | Qwen | `qwen/qwen3.8-flash` | $0.15 | $0.47 | Cheap (open-weight) |
 | Google | `google/gemini-3.5-flash-lite` | $0.30 | $2.50 | Cheap |
 | Google | `google/gemini-3.8-flash` | $0.75 | $3.75 | Mid |
@@ -81,7 +81,7 @@ since the brief's table was set.
 |---|---|---|---|
 | A | OpenAI | `openai/gpt-5.6-luna` | Cheap — **done** |
 | B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap — **done** (covered twice - see note below) |
-| C | Mistral | `mistralai/mistral-small-2603` | Cheap — retrying (rate-limited earlier) |
+| C | Mistral | `mistralai/mistral-small-3.2-24b-instruct` | Cheap — retrying (swapped from `mistral-small-2603`, which kept 429-ing for hours - see below) |
 | D | Google | `google/gemini-3.8-flash` | Mid — **done** (covered twice - see note below) |
 | E | Qwen | `qwen/qwen3.8-max-0902` | Mid — **done** |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — **`REF-6007` only, already run, $0 more to spend** |
@@ -96,7 +96,7 @@ every constraint above with room to argue about the exact picks.
 |---|---|---|---|---|---|
 | A | `openai/gpt-5.6-luna` | 40.7% (48/118) | 94.9% (112/118) | US$0.1473 | Done, committed as `results_model_gpt5.6-luna.json` |
 | B | `deepseek/deepseek-v4.1-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.1294 | Done, committed as `results_model_deepseek-v4.1-flash.json` - best decision-level accuracy so far |
-| C | `mistralai/mistral-small-2603` | — | — | — | Hit two live infra issues before a real run: a `max_tokens` truncation bug and an HTTP 429 rate limit, both fixed/handled in code - see `docs/CHANGELOG.md`. Retrying. |
+| C | `mistralai/mistral-small-3.2-24b-instruct` | — | — | — | `mistral-small-2603` hit a `max_tokens` truncation bug (fixed in code) then a persistent HTTP 429 that never cleared even after hours - not a transient burst limit. Swapped to this model instead (still Mistral family, even cheaper: $0.075/$0.20). Slug verified live - the first guess, without `-instruct`, was also wrong. Retrying. |
 | D | `google/gemini-3.8-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.6543 | Done, committed as `results_model_google-gemini-3.8-flash.json` - tied for best decision-level accuracy, but ~5x pricier than any cheap-tier model so far (mid-tier pricing). Hit a real incident on the way - a missing price crashed silently past the automation's own safety check; see `docs/CHANGELOG.md`. |
 | E | `qwen/qwen3.8-max-0902` | 40.7% (48/118) | 95.8% (113/118) | US$1.7483 | Done, committed as `results_model_qwen-qwen3.8-max-0902.json` - by far the most expensive slot, matching its $2/$6 pricing |
 | F | `anthropic/claude-opus-5` | 0/3 code-check pass (trigger-wording only) | escalate in all 3 (from the verbose transcript - no saved results file for a single-case run) | US$0.157 | Done (`REF-6007` only) |
@@ -246,7 +246,7 @@ a reasoning-heavy model can land far past "verbose." Scaled to the full
 |---|---|---|---|---|---|
 | A | OpenAI | `openai/gpt-5.6-luna` | Cheap | US$0.12–$0.27 | ~12–45 min |
 | B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap | US$0.09–$0.17 | ~12–45 min |
-| C | Mistral | `mistralai/mistral-small-2603` | Cheap | US$0.09–$0.17 | ~12–45 min |
+| C | Mistral | `mistralai/mistral-small-3.2-24b-instruct` | Cheap | US$0.04–$0.07 | ~12–45 min |
 | D | Google | `google/gemini-3.8-flash` | Mid | US$0.45–$0.93 | ~12–45 min |
 | E | Qwen | `qwen/qwen3.8-max-0902` | Mid | US$1.14–$1.94 | ~12–45 min |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — `REF-6007` only, **already done** | US$0.157 (spent, measured, not an estimate) | already run |

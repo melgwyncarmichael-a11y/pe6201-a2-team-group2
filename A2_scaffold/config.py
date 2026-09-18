@@ -154,6 +154,12 @@ PRICES = {
     # as the two notes above.
     "qwen/qwen3.8-max-0902": (2.00, 6.00),
     "google/gemini-3.8-flash": (0.75, 3.75),
+    # Swapped in for mistral-small-2603 (slot C) 2026-09-19 after that
+    # model's provider route kept 429-ing for hours - not a transient
+    # burst limit our retry-with-backoff could fix. Slug verified live -
+    # my first guess ("mistral-small-3.2-24b", no "-instruct") was ALSO
+    # wrong, same lesson as the other slugs in this file.
+    "mistralai/mistral-small-3.2-24b-instruct": (0.075, 0.20),
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
 }
 
