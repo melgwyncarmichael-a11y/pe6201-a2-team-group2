@@ -80,10 +80,10 @@ since the brief's table was set.
 | Slot | Family | Model | Tier |
 |---|---|---|---|
 | A | OpenAI | `openai/gpt-5.6-luna` | Cheap — **done** |
-| B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap — running |
-| C | Mistral | `mistralai/mistral-small-2603` | Cheap — not started |
-| D | Google | `google/gemini-3.8-flash` | Mid — **done** |
-| E | Qwen | `qwen/qwen3.8-max-0902` | Mid — not started |
+| B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap — **done** (covered twice - see note below) |
+| C | Mistral | `mistralai/mistral-small-2603` | Cheap — retrying (rate-limited earlier) |
+| D | Google | `google/gemini-3.8-flash` | Mid — **done** (covered twice - see note below) |
+| E | Qwen | `qwen/qwen3.8-max-0902` | Mid — **done** |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — **`REF-6007` only, already run, $0 more to spend** |
 | G (7th member) | — | v1-vs-v2 prompt pass, on whichever model the team fixes | — |
 
@@ -98,8 +98,21 @@ every constraint above with room to argue about the exact picks.
 | B | `deepseek/deepseek-v4.1-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.1294 | Done, committed as `results_model_deepseek-v4.1-flash.json` - best decision-level accuracy so far |
 | C | `mistralai/mistral-small-2603` | — | — | — | Hit two live infra issues before a real run: a `max_tokens` truncation bug and an HTTP 429 rate limit, both fixed/handled in code - see `docs/CHANGELOG.md`. Retrying. |
 | D | `google/gemini-3.8-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.6543 | Done, committed as `results_model_google-gemini-3.8-flash.json` - tied for best decision-level accuracy, but ~5x pricier than any cheap-tier model so far (mid-tier pricing). Hit a real incident on the way - a missing price crashed silently past the automation's own safety check; see `docs/CHANGELOG.md`. |
-| E | `qwen/qwen3.8-max-0902` | — | — | — | Not started. Slug corrected 2026-09-18 - `qwen/qwen3.8-max` (no date suffix) redirects to this on OpenRouter's own site; used the exact slug, not the alias. |
+| E | `qwen/qwen3.8-max-0902` | 40.7% (48/118) | 95.8% (113/118) | US$1.7483 | Done, committed as `results_model_qwen-qwen3.8-max-0902.json` - by far the most expensive slot, matching its $2/$6 pricing |
 | F | `anthropic/claude-opus-5` | 0/3 code-check pass (trigger-wording only) | escalate in all 3 (from the verbose transcript - no saved results file for a single-case run) | US$0.157 | Done (`REF-6007` only) |
+
+**Duplicate submissions - not yet reconciled, bring to the team:** two
+teammates independently ran slots that were already done here.
+`Keira11YIZHEN` submitted `results_google_gemini-3.8-flash.json` (slot D)
+- genuinely valid (`--auto-approve` used correctly), and closely matches
+the number above (40.68% raw, $0.675 vs this table's $0.6543 - normal
+run-to-run token variance). `zhaoyintian2-png` submitted
+`results_deepseek-v4.1-flash.Json` (slot B) - **not comparable**, same
+missing-`--auto-approve` issue as the earlier `gpt-5.6-luna` incident
+(27.97% raw instead of the real ~40.7%). Worth telling them directly and
+picking ONE canonical file per slot for the report before submission -
+having two differently-scoped files for the same slot will confuse
+whoever writes up D5(b)'s results table.
 
 \* Decision-level accuracy sets aside pure trigger-*wording* mismatches
 where the underlying decision was actually correct - see
