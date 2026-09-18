@@ -1,5 +1,5 @@
 {
-  "config": "BACKEND=scripted  FREE, deterministic  |  PROBLEM=B  |  model=(no model)  |  cap=8 turns  |  autonomy=confirm  |  decision_mode=rules",
+  "config": "BACKEND=scripted  FREE, deterministic  |  PROBLEM=B  |  model=(no model)  |  cap=8 turns  |  autonomy=confirm  |  decision_mode=model",
   "auto_approve": false,
   "negatives_only": false,
   "summary": {
@@ -30,11 +30,11 @@
         "tokens_in": 16800,
         "tokens_out": 480,
         "cost_usd": 0.002808,
-        "seconds": 0.002,
+        "seconds": 0.0,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -67,7 +67,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -100,7 +100,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -144,7 +144,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -176,7 +176,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -208,7 +208,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -240,7 +240,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -283,7 +283,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -326,7 +326,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -369,7 +369,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -401,7 +401,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -433,7 +433,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -465,7 +465,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -497,7 +497,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -529,7 +529,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -561,7 +561,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -593,7 +593,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -625,7 +625,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -657,7 +657,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -689,7 +689,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -721,7 +721,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -753,7 +753,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -791,7 +791,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -829,7 +829,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -867,7 +867,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -904,7 +904,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -941,7 +941,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -978,7 +978,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1015,7 +1015,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1052,7 +1052,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1089,7 +1089,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1121,7 +1121,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1153,7 +1153,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1185,7 +1185,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1228,7 +1228,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1271,7 +1271,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1314,7 +1314,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1352,7 +1352,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1390,7 +1390,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1428,7 +1428,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1460,7 +1460,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -1492,7 +1492,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -1524,7 +1524,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -1567,7 +1567,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1599,7 +1599,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1631,7 +1631,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1663,7 +1663,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -1700,7 +1700,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1737,7 +1737,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1774,7 +1774,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1817,7 +1817,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1860,7 +1860,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -1892,7 +1892,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -1924,7 +1924,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -1956,7 +1956,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -1999,7 +1999,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2037,7 +2037,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2075,7 +2075,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2113,7 +2113,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2156,7 +2156,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2188,7 +2188,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2220,7 +2220,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2252,7 +2252,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2284,7 +2284,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2316,7 +2316,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2348,7 +2348,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2380,7 +2380,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2412,7 +2412,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2444,7 +2444,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2476,7 +2476,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2508,7 +2508,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2540,7 +2540,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2572,7 +2572,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2604,7 +2604,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2636,7 +2636,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -2668,7 +2668,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -2700,7 +2700,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -2732,7 +2732,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -2764,7 +2764,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2796,7 +2796,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2828,7 +2828,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -2871,7 +2871,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2914,7 +2914,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -2946,7 +2946,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -2978,7 +2978,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3010,7 +3010,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3048,7 +3048,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3086,7 +3086,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3124,7 +3124,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3156,7 +3156,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3188,7 +3188,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3220,7 +3220,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3252,7 +3252,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3284,7 +3284,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3316,7 +3316,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3348,7 +3348,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3380,7 +3380,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3412,7 +3412,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3444,7 +3444,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3476,7 +3476,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3508,7 +3508,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3551,7 +3551,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3594,7 +3594,7 @@
         ],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "book",
           "trigger": null,
@@ -3626,7 +3626,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3658,7 +3658,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3690,7 +3690,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "request_information",
           "trigger": null,
@@ -3722,7 +3722,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3754,7 +3754,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3786,7 +3786,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -3818,7 +3818,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -3850,7 +3850,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -3882,7 +3882,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "duplicate_future_appointment",
@@ -3914,7 +3914,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3946,7 +3946,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -3978,7 +3978,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "specialty_mismatch",
@@ -4010,7 +4010,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -4042,7 +4042,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",
@@ -4074,7 +4074,7 @@
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
-        "decision_mode": "rules",
+        "decision_mode": "model",
         "resolved_routing": {
           "resolved_decision": "escalate",
           "trigger": "red_flag_term",

@@ -98,7 +98,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             if iterations > config.MAX_TURNS + 2:
                 raise GuardrailStop("step_cap", "loop did not terminate")
 
-            move = backend.next_move(transcript)
+            move = _normalize_move(backend.next_move(transcript))
             ti, to = backend.token_estimate(transcript)
             tokens_in, tokens_out = tokens_in + ti, tokens_out + to
             guards.check_budget(tokens_in + tokens_out)
@@ -129,7 +129,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             # Only calls INDEPENDENT of each other belong in one turn.
             # A dependency chain cannot be shortened by running things at
             # once - that is why Problem B saves less than Problem A.
-            calls = move.get("calls") or [(move["tool"], move["args"])]
+            calls = move["calls"]  # _normalize_move guaranteed this shape
             observations = []
 
             for name, args in calls:
@@ -221,3 +221,37 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
 def _short(value, n=64):
     s = repr(value)
     return s if len(s) <= n else s[:n - 1] + "…"
+
+
+def _normalize_move(move):
+    """A live model's reply can be syntactically valid JSON and still be
+    shaped wrong - missing 'tool'/'args', a 'calls' entry that isn't a
+    [name, args] pair (a model unfamiliar with this exact convention
+    might reasonably send {"tool": ..., "args": ...} objects instead of
+    ["tool", {...}] arrays), or args that aren't a JSON object at all.
+    Left unchecked, extracting calls from a move like that raises
+    KeyError/ValueError/TypeError straight out of the loop below and
+    crashes the WHOLE RUN, not just this move - the same failure class as
+    the _parse_move and tools.call() fixes (see docs/CHANGELOG.md,
+    2026-09-18). Normalise here into the SAME escalate shape _parse_move
+    already uses for unparseable JSON, so one downstream code path -
+    "if 'final' in move" - handles both kinds of failure identically.
+    """
+    if "final" in move:
+        if isinstance(move["final"], dict):
+            return move
+        return {"final": {"decision": "escalate",
+                          "reason": "model's 'final' was not a JSON object "
+                                    "(got %s)" % type(move["final"]).__name__},
+                "thought": (move.get("thought", "") + " [malformed final]").strip()}
+    try:
+        calls = move.get("calls") or [(move["tool"], move["args"])]
+        calls = [(name, args) for name, args in calls]
+        if not all(isinstance(args, dict) for _, args in calls):
+            raise TypeError("a call's args was not a JSON object")
+    except (KeyError, ValueError, TypeError) as e:
+        return {"final": {"decision": "escalate",
+                          "reason": "model returned a malformed action - %s" % e},
+                "thought": (move.get("thought", "") + " [malformed move]").strip()}
+    move["calls"] = calls
+    return move

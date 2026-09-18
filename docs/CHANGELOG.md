@@ -7,6 +7,60 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Proactive audit: two more move-shape crashes, found before any model hit them
+
+**Why checked now:** after fixing three separate "untrusted live-model
+output crashes the whole run" bugs today (`_parse_move`'s non-string
+content, `_live_call`'s missing `choices`, `tools.call()`'s bad tool
+arguments), audited the rest of `agent.py`'s move-handling for the same
+failure class before the other 5 battery models hit it one incident at a
+time. Found two more, neither yet reported live - caught by direct
+testing, not a crash report.
+
+**1. A `calls` entry that isn't a `[name, args]` pair.**
+`calls = move.get("calls") or [(move["tool"], move["args"])]` then
+`for name, args in calls:` assumed every entry unpacks cleanly into
+exactly two values. A model sending `{"calls": [{"tool": "get_referral",
+"args": {...}}]}` - JSON objects instead of `["tool", {...}]` arrays, an
+easy mistake for a model unfamiliar with this exact convention - or any
+`args` that isn't a JSON object, would raise `KeyError`/`ValueError`
+straight out of the loop.
+
+**2. A `final` value that isn't a JSON object.**
+`record = dict(move["final"])` assumed `move["final"]` was always a
+dict. `{"final": "just a string reason"}` or `{"final": null}` - both
+syntactically valid JSON - raise `ValueError`/`TypeError` from `dict()`
+itself.
+
+**The fix (`agent.py`):** new `_normalize_move()`, called immediately on
+every `backend.next_move()` result. Validates both the `calls` shape and
+the `final` shape; anything malformed becomes the SAME escalate shape
+`_parse_move()` already uses for unparseable JSON, so one downstream code
+path (`if "final" in move`) handles every kind of malformed live-model
+output identically - a gradeable record, never a crash.
+
+**One thing deliberately NOT changed:** `tools.call()`'s `KeyError` for
+an unknown tool NAME still crashes the whole run - its own docstring says
+that's intentional ("a silent no-op here would produce a run that looks
+fine and decided nothing on evidence it never gathered"). That was
+written for catching an agent/registry mismatch during development, but a
+live model can now genuinely hallucinate a nonexistent tool name too.
+Flagged, not changed - this is a judgement call about intended behaviour,
+not an oversight like the others above.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Seven direct `_normalize_move()` cases: well-formed `calls` passes
+  through unchanged; well-formed `final` passes through unchanged; missing
+  `calls`/`tool`/`args` → gradeable escalate; `tool` without `args` →
+  gradeable escalate; dict-shaped `calls` entries → gradeable escalate;
+  non-dict `args` → gradeable escalate; single `tool`/`args` shape (no
+  `calls` key) still normalizes correctly.
+- Three direct `final`-shape cases: string `final` → gradeable escalate;
+  `null` `final` → gradeable escalate; well-formed `final` untouched.
+
+---
+
 ## 2026-09-18 — A malformed tool call from a live model crashed the whole run, not just one case
 
 **Reported by:** a teammate running `deepseek/deepseek-chat-v3.1` live
