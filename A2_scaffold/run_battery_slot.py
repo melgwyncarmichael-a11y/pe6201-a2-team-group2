@@ -31,6 +31,7 @@ config.PRICES - both already fail loudly on their own if missing, this
 script does not duplicate those checks.
 ====================================================================
 """
+import os
 import subprocess
 import sys
 
@@ -45,6 +46,7 @@ KNOWN_BAD_SIGNS = [
     "was not a JSON object",               # malformed 'final'
     "unknown_tool",                        # hallucinated tool name
     "bad_arguments",                       # wrong tool argument shape
+    "No price entered for MODEL",          # config.PRICES missing this model
     "Traceback (most recent call last)",   # anything else uncaught
 ]
 
@@ -79,13 +81,30 @@ def main(argv):
         print("  then re-run this script.")
         return 1
 
+    # Remove any pre-existing results.json BEFORE the full battery runs.
+    # If it crashes partway and never writes a fresh one, there is then
+    # nothing left for `mv` to silently pick up instead - this exact
+    # gap once let a crashed run look like a completed one with a real
+    # (but wrong) pass rate (docs/CHANGELOG.md, 2026-09-18: the
+    # gpt-4o-mini rules-vs-model incident). Checking returncode/known-bad-
+    # signs alone was not enough THIS time either: a missing-price
+    # SystemExit exits with code 1, identical to an ordinary code-check
+    # failure, and slipped past the smoke test until "No price entered"
+    # was added to KNOWN_BAD_SIGNS above.
+    if os.path.exists("results.json"):
+        os.remove("results.json")
+
     print("\n  Smoke test clean. Running the full battery (--all, ~118")
     print("  trials, several minutes)...\n")
     full = run(["python3", "run_eval.py", "--backend", "live",
                "--model", model, "--mode", "model", "--all", "--auto-approve"])
-    if full.returncode not in (0, 1):
-        print("  FULL BATTERY CRASHED - not saving results. Read the")
-        print("  traceback above before retrying.")
+    bad = [s for s in KNOWN_BAD_SIGNS if s in full.stdout or s in full.stderr]
+    if full.returncode not in (0, 1) or bad or not os.path.exists("results.json"):
+        reason = (", ".join(bad) if bad else
+                  "no results.json written" if not os.path.exists("results.json") else
+                  "process exited %d" % full.returncode)
+        print("  FULL BATTERY FAILED - %s" % reason)
+        print("  Not saving anything. Read the output above before retrying.")
         return 1
 
     safe_name = model.replace("/", "-")

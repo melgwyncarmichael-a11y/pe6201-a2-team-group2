@@ -153,6 +153,7 @@ PRICES = {
     # own site - used the exact slug shown, not the alias, same reason
     # as the two notes above.
     "qwen/qwen3.8-max-0902": (2.00, 6.00),
+    "google/gemini-3.8-flash": (0.75, 3.75),
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
 }
 

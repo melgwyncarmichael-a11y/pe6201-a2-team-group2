@@ -7,6 +7,55 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Missing price crashed a run silently past run_battery_slot.py's own safety check
+
+**My own mistake, not a teammate report:** verified `google/gemini-3.8-
+flash`'s slug and price live on OpenRouter, confirmed both matched what
+was already planned - and then never actually added the price to
+`config.PRICES`. Every trial crashed on `config.price_for()`'s
+deliberate `SystemExit("No price entered for MODEL...")`.
+
+**Why `run_battery_slot.py` didn't catch it, even though it's built
+specifically to catch exactly this kind of thing:** `sys.exit("some
+string")` exits with code 1 - identical to an ordinary code-check
+failure (a `--mode model` case failing on trigger-wording is EXPECTED
+and must not stop the pipeline). The smoke test's returncode check
+alone couldn't tell "the model got the trigger wording wrong" apart
+from "the whole run crashed at the first line of cost accounting."
+Worse: because the full-battery step blindly `mv`'d `results.json`
+without checking it was actually written, the crashed run's `mv` picked
+up a STALE `results.json` left over from an earlier scripted regression
+check and saved it as `results_model_google-gemini-3.8-flash.json` -
+confidently labelled live-model data that was actually
+`BACKEND=scripted`, 100% pass, completely unrelated to this model. Same
+failure shape as the earlier gpt-4o-mini stale-file incident, different
+root cause, caught the same way: inspecting the saved file's own
+`config` field, not trusting the pass rate.
+
+**The fix:**
+- `config.py` - added `google/gemini-3.8-flash`'s price (the one I'd
+  already verified and then forgot to write down).
+- `run_battery_slot.py` - added `"No price entered for MODEL"` to
+  `KNOWN_BAD_SIGNS`. More importantly: `results.json` is now removed
+  BEFORE the full battery runs, and the script checks it actually
+  EXISTS again afterward (plus re-checks `KNOWN_BAD_SIGNS` on the
+  full-battery output too, not just the smoke test) before doing the
+  `mv`. If the full battery crashes and writes nothing, there is now
+  nothing left to silently pick up - the script reports "no results.json
+  written" and saves nothing, instead of mv-ing stale data with
+  confidence.
+
+**Verified:**
+- Scripted regression: **118/118, 100%**, unaffected.
+- `config.price_for('google/gemini-3.8-flash')` now resolves correctly.
+- Confirmed `"No price entered for MODEL"` is now detected by the
+  `KNOWN_BAD_SIGNS` check directly.
+- Confirmed the stale `results_model_google-gemini-3.8-flash.json` this
+  incident produced was genuinely scripted data (`BACKEND=scripted`,
+  118/118) by reading its own `config` field - deleted, not committed.
+
+---
+
 ## 2026-09-18 — Added retry-with-backoff for HTTP 429 (rate limit)
 
 **Found by:** `run_battery_slot.py`'s smoke test on `mistralai/mistral-
