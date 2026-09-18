@@ -82,7 +82,7 @@ since the brief's table was set.
 | A | OpenAI | `openai/gpt-5.6-luna` | Cheap — **done** |
 | B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap — running |
 | C | Mistral | `mistralai/mistral-small-2603` | Cheap — not started |
-| D | Google | `google/gemini-3.8-flash` | Mid — not started |
+| D | Google | `google/gemini-3.8-flash` | Mid — **done** |
 | E | Qwen | `qwen/qwen3.8-max-0902` | Mid — not started |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — **`REF-6007` only, already run, $0 more to spend** |
 | G (7th member) | — | v1-vs-v2 prompt pass, on whichever model the team fixes | — |
@@ -97,7 +97,7 @@ every constraint above with room to argue about the exact picks.
 | A | `openai/gpt-5.6-luna` | 40.7% (48/118) | 94.9% (112/118) | US$0.1473 | Done, committed as `results_model_gpt5.6-luna.json` |
 | B | `deepseek/deepseek-v4.1-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.1294 | Done, committed as `results_model_deepseek-v4.1-flash.json` - best decision-level accuracy so far |
 | C | `mistralai/mistral-small-2603` | — | — | — | Hit two live infra issues before a real run: a `max_tokens` truncation bug and an HTTP 429 rate limit, both fixed/handled in code - see `docs/CHANGELOG.md`. Retrying. |
-| D | `google/gemini-3.8-flash` | — | — | — | Not started. Slug + price re-verified live 2026-09-18, unchanged from the table above. |
+| D | `google/gemini-3.8-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.6543 | Done, committed as `results_model_google-gemini-3.8-flash.json` - tied for best decision-level accuracy, but ~5x pricier than any cheap-tier model so far (mid-tier pricing). Hit a real incident on the way - a missing price crashed silently past the automation's own safety check; see `docs/CHANGELOG.md`. |
 | E | `qwen/qwen3.8-max-0902` | — | — | — | Not started. Slug corrected 2026-09-18 - `qwen/qwen3.8-max` (no date suffix) redirects to this on OpenRouter's own site; used the exact slug, not the alias. |
 | F | `anthropic/claude-opus-5` | 0/3 code-check pass (trigger-wording only) | escalate in all 3 (from the verbose transcript - no saved results file for a single-case run) | US$0.157 | Done (`REF-6007` only) |
 
