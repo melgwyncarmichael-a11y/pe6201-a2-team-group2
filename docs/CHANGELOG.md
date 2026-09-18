@@ -7,6 +7,31 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — Added retry-with-backoff for HTTP 429 (rate limit)
+
+**Found by:** `run_battery_slot.py`'s smoke test on `mistralai/mistral-
+small-2603`, right after the `max_tokens` fix above - `urllib.error.
+HTTPError: HTTP Error 429: Too Many Requests`, uncaught, aborting the run.
+Not a code bug in the usual sense - a rate limit is an expected outcome
+once a session makes hundreds of live calls across a full model battery,
+not an exceptional one.
+
+**The fix (`backends.py`, `_live_call()`):** retries up to 3 times on a
+429 specifically, honouring the provider's own `Retry-After` header when
+sent (falls back to exponential backoff starting at 2s otherwise). Any
+other HTTP error - a real bad request, auth failure, wrong model - still
+raises immediately on the first attempt. Retrying those instead of a
+rate limit would silently mask an actual problem behind a delay.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Mocked `urlopen` returning 429 twice then succeeding: confirmed exactly
+  3 calls made, correct content/usage returned on the third.
+- Mocked `urlopen` returning a 400: confirmed it raises immediately,
+  exactly 1 call made, not retried.
+
+---
+
 ## 2026-09-18 — No `max_tokens` set; some providers' default cut a reply off mid-JSON
 
 **Found by:** the smoke-test step of `run_battery_slot.py`'s first-ever

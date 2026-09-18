@@ -26,6 +26,8 @@ moves is how you test the parts you wrote.
 ====================================================================
 """
 import json
+import time
+import urllib.error
 import urllib.request
 
 import config
@@ -1303,8 +1305,32 @@ def _live_call(messages):
         data=body,
         headers={"Authorization": "Bearer " + config.API_KEY,
                  "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        payload = json.load(r)
+
+    # Rate limits are expected, not exceptional, once a battery makes
+    # hundreds of calls in a session - seen live (mistralai/mistral-
+    # small-2603) as a bare HTTP 429 that used to abort the whole run.
+    # Retry with backoff, honouring Retry-After when the provider sends
+    # one; anything else (a real auth/model/request error) still fails
+    # immediately, not silently retried into a wrong answer.
+    max_retries = 3
+    delay = 2.0
+    for attempt in range(max_retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                payload = json.load(r)
+            break
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or attempt == max_retries:
+                raise
+            wait = delay
+            retry_after = e.headers.get("Retry-After") if e.headers else None
+            if retry_after:
+                try:
+                    wait = float(retry_after)
+                except ValueError:
+                    pass
+            time.sleep(wait)
+            delay *= 2
     # A malformed request or an OpenRouter-side problem (bad model slug,
     # rate limit, no credit) comes back as HTTP 200 with an "error" body
     # instead of "choices" - fail loudly with what the API actually said,
