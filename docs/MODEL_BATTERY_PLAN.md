@@ -59,8 +59,8 @@ result couldn't be attributed to either one.
 | Family | Model (OpenRouter slug) | Input /M | Output /M | Tier |
 |---|---|---|---|---|
 | OpenAI | `openai/gpt-5.6-luna` | $0.20 | $1.20 | Cheap |
-| DeepSeek | `deepseek/deepseek-flash` | $0.15 | $0.60 | Cheap |
-| Mistral | `mistralai/mistral-small-4` | $0.15 | $0.60 | Cheap (open-weight) |
+| DeepSeek | `deepseek/deepseek-v4.1-flash` | $0.15 | $0.60 | Cheap |
+| Mistral | `mistralai/mistral-small-2603` | $0.15 | $0.60 | Cheap (open-weight) |
 | Qwen | `qwen/qwen3.8-flash` | $0.15 | $0.47 | Cheap (open-weight) |
 | Google | `google/gemini-3.5-flash-lite` | $0.30 | $2.50 | Cheap |
 | Google | `google/gemini-3.8-flash` | $0.75 | $3.75 | Mid |
@@ -80,8 +80,8 @@ since the brief's table was set.
 | Slot | Family | Model | Tier |
 |---|---|---|---|
 | A | OpenAI | `openai/gpt-5.6-luna` | Cheap |
-| B | DeepSeek | `deepseek/deepseek-flash` | Cheap |
-| C | Mistral | `mistralai/mistral-small-4` | Cheap |
+| B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap |
+| C | Mistral | `mistralai/mistral-small-2603` | Cheap |
 | D | Google | `google/gemini-3.8-flash` | Mid |
 | E | Qwen | `qwen/qwen3.8-max` | Mid |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — **`REF-6007` only, already run, $0 more to spend** |
@@ -149,7 +149,15 @@ evidence behind the team's D0/D6 architecture argument.
    committed.**
 2. **Add your model's real price to `config.PRICES`** in `A2_scaffold/config.py`
    before running — the code refuses to run with an unlisted model rather
-   than silently mispricing it.
+   than silently mispricing it. **Verify the exact OpenRouter slug first,
+   not just the price** - the display name on a model's card is often
+   NOT its slug. Caught live 2026-09-18: `deepseek/deepseek-flash` and
+   `mistralai/mistral-small-4` both looked right but were 404s - the real
+   slugs were `deepseek/deepseek-v4.1-flash` and
+   `mistralai/mistral-small-2603`. A wrong slug fails as `HTTP Error 400:
+   Bad Request` on your first live call, not at price-check time. Open
+   the model's actual OpenRouter page (`openrouter.ai/<slug>`) and
+   confirm it loads before adding it to `PRICES`.
 3. **Pass `--auto-approve`.** Since the autonomy-gate fix (see
    `docs/CHANGELOG.md`), a live run with no approval callback correctly
    *holds* every booking instead of auto-approving — every `book` case
@@ -202,8 +210,8 @@ a reasoning-heavy model can land far past "verbose." Scaled to the full
 | Slot | Family | Model | Tier | Est. cost (full battery) | Est. wall time |
 |---|---|---|---|---|---|
 | A | OpenAI | `openai/gpt-5.6-luna` | Cheap | US$0.12–$0.27 | ~12–45 min |
-| B | DeepSeek | `deepseek/deepseek-flash` | Cheap | US$0.09–$0.17 | ~12–45 min |
-| C | Mistral | `mistralai/mistral-small-4` | Cheap | US$0.09–$0.17 | ~12–45 min |
+| B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap | US$0.09–$0.17 | ~12–45 min |
+| C | Mistral | `mistralai/mistral-small-2603` | Cheap | US$0.09–$0.17 | ~12–45 min |
 | D | Google | `google/gemini-3.8-flash` | Mid | US$0.45–$0.93 | ~12–45 min |
 | E | Qwen | `qwen/qwen3.8-max` | Mid | US$1.14–$1.94 | ~12–45 min |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — `REF-6007` only, **already done** | US$0.157 (spent, measured, not an estimate) | already run |

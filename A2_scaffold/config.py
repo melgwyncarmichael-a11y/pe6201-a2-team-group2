@@ -142,9 +142,13 @@ PRICES = {
                                                 # docs/MODEL_BATTERY_PLAN.md
     # Cheap-tier D5(b) candidates, checked 2026-09-18 - see
     # docs/MODEL_BATTERY_PLAN.md's candidate table for the full spread.
+    # NOTE: "deepseek/deepseek-flash" and "mistralai/mistral-small-4" were
+    # WRONG SLUGS (404 on OpenRouter, confirmed 2026-09-18 after a live
+    # HTTP 400) - the display name isn't the slug. Verified against
+    # OpenRouter's own model pages before adding these.
     "openai/gpt-5.6-luna": (0.20, 1.20),
-    "deepseek/deepseek-flash": (0.15, 0.60),
-    "mistralai/mistral-small-4": (0.15, 0.60),
+    "deepseek/deepseek-v4.1-flash": (0.15, 0.60),
+    "mistralai/mistral-small-2603": (0.15, 0.60),
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
 }
 
