@@ -1288,6 +1288,15 @@ def _live_call(messages):
         "model": config.MODEL,
         "messages": messages,
         "temperature": 0,
+        # No max_tokens meant "whatever OpenRouter's default is for that
+        # specific provider" - fine for some, too small for others.
+        # Seen live (mistralai/mistral-small-2603): a JSON reply cut off
+        # mid-"thought" string, indistinguishable from a formatting
+        # mistake until you notice EVERY failure starts with the same
+        # truncated text. 1024 comfortably covers every successful call
+        # measured across every model run so far (largest single-trial
+        # total was 1118 output tokens across THREE calls, not one).
+        "max_tokens": 1024,
     }).encode()
     req = urllib.request.Request(
         config.BASE_URL.rstrip("/") + "/chat/completions",

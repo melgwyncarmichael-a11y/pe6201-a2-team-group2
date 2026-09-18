@@ -7,6 +7,41 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-18 — No `max_tokens` set; some providers' default cut a reply off mid-JSON
+
+**Found by:** the smoke-test step of `run_battery_slot.py`'s first-ever
+real live run (`mistralai/mistral-small-2603`), which worked exactly as
+designed - it caught this and stopped before spending on the full
+battery. Two of three smoke-test trials failed identically:
+
+```
+unparseable: {"thought": "Need to fetch the referral details first to proceed with the c
+```
+
+Same truncated text, cut off mid-sentence, both times - not a formatting
+mistake, a length cutoff. (The third trial worked, and also incidentally
+proved an earlier fix already paying off: `lookup_patient` returned
+`None` for a hallucinated patient id, and the run handled it gracefully
+instead of crashing - see the `AttributeError` fix above.)
+
+**Root cause:** `_live_call()`'s request body never set `max_tokens` -
+every provider was getting whatever ITS OWN default happens to be.
+Fine for models tested so far; apparently too small for at least one
+provider behind `mistral-small-2603` on OpenRouter, which cut the
+response off before the JSON object closed.
+
+**The fix (`backends.py`):** added `"max_tokens": 1024` to the request
+body - comfortably above every successful call measured across every
+model run today (largest single-TRIAL total was 1118 output tokens
+across three separate calls, not one).
+
+**Verified:** scripted regression, both decision modes: **118/118,
+100%**, unaffected (`ScriptedBackend` never calls `_live_call`).
+Live re-verification on `mistral-small-2603` - pending, re-run
+`run_battery_slot.py` with this fix in place.
+
+---
+
 ## 2026-09-18 — Wrong specialty/referral value (not shape) crashed resolve_routing() with AttributeError
 
 **Reported by:** a teammate running `deepseek/deepseek-chat-v3.1` live

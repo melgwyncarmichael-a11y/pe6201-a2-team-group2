@@ -30,7 +30,7 @@
         "tokens_in": 16800,
         "tokens_out": 480,
         "cost_usd": 0.002808,
-        "seconds": 0.002,
+        "seconds": 0.003,
         "guardrails_fired": [],
         "stopped_by": null,
         "backend": "scripted",
