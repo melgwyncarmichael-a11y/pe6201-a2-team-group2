@@ -32,7 +32,13 @@ BASE_URL = "https://openrouter.ai/api/v1"
 # Your key never goes in this file. Put it in the environment:
 #     export OPENROUTER_API_KEY="sk-or-..."
 # In Colab:  os.environ["OPENROUTER_API_KEY"] = "sk-or-..."
-API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+#
+# .strip() matters: a key pasted with a trailing newline (common from a
+# notes app, a .env file, or some dashboards' "copy" button) becomes an
+# invalid HTTP header value - urllib raises `ValueError: Invalid header
+# value` from deep inside http.client, nowhere near this file, on the
+# FIRST live call. A stripped key can never trigger that failure mode.
+API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
 # ─────────────────────────────────────────────────────────────────────
 # WHICH PROBLEM. "A" = claims first response, "B" = referral coordination.
