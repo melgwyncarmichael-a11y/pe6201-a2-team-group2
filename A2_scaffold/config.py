@@ -133,7 +133,11 @@ def data_root():
 # price_for() below fails loudly rather than guessing if it's missing.
 # ─────────────────────────────────────────────────────────────────────
 PRICES = {
-    "openai/gpt-4o-mini": (0.10, 0.40),   # (price_in, price_out) per 1M tokens
+    # The brief's own reference price (checked 28 Aug 2026) was 0.10/0.40 -
+    # re-checked live on OpenRouter 2026-09-18 and it has moved to 0.15/0.60.
+    # Same story as every other model in docs/MODEL_BATTERY_PLAN.md: prices
+    # move, re-check before you spend real money, don't trust a cached number.
+    "openai/gpt-4o-mini": (0.15, 0.60),   # (price_in, price_out) per 1M tokens
     "anthropic/claude-opus-5": (5.00, 25.00),  # checked 2026-09-18, see
                                                 # docs/MODEL_BATTERY_PLAN.md
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
