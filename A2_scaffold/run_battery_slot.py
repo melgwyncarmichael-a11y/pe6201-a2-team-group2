@@ -47,6 +47,15 @@ KNOWN_BAD_SIGNS = [
     "unknown_tool",                        # hallucinated tool name
     "bad_arguments",                       # wrong tool argument shape
     "No price entered for MODEL",          # config.PRICES missing this model
+    # "unparseable:" only prints once the self-correction retry has
+    # ALREADY been tried and failed (see backends.py) - it's a reliable
+    # "this trial gave up" signal, not a guess. Added after
+    # mistralai/mistral-small-3.2-24b-instruct's smoke test showed this
+    # in 2 of 3 trials' turn traces (only trial 1's full DECISION RECORD
+    # prints "did not return parseable JSON" verbatim - the other
+    # trials' failures were invisible to this list until now) and the
+    # smoke test still called itself "clean".
+    "unparseable:",
     "Traceback (most recent call last)",   # anything else uncaught
 ]
 

@@ -7,6 +7,52 @@ was verified. Newest first.
 
 ---
 
+## 2026-09-19 — Two gaps found in one run: network timeouts weren't retried, and the smoke test could call itself "clean" while missing real failures
+
+**Found by:** `mistralai/mistral-small-3.2-24b-instruct`'s live battery
+(slot C, after switching away from `mistral-small-2603`'s persistent
+429s). Two separate issues in the same run:
+
+**1. A bare `TimeoutError` aborted the whole battery, nothing saved.**
+The 429 retry added earlier only catches `urllib.error.HTTPError` - a
+read timeout (the response never arrived within 60s) raises a plain
+`TimeoutError` from the socket layer, a different exception entirely,
+and escaped uncaught. `run_battery_slot.py`'s safety check correctly
+stopped the pipeline and saved nothing (no stale-file risk this time),
+but the whole 118-trial run still had to be thrown away.
+
+**2. The smoke test's own bad-sign list had a real blind spot.** The
+smoke test (`REF-5590`, a negative case, 3 trials) showed 2 of 3 trials
+failing with `unparseable:` in their turn trace - the model narrating in
+prose even after the self-correction retry already tried and failed -
+yet `run_battery_slot.py` still reported "Smoke test clean." Reason:
+`"did not return parseable JSON"` only gets printed verbatim inside the
+full `DECISION RECORD` JSON dump, and that dump only happens for
+`results[0]` (trial 1). Trials 2 and 3's failures only show up as
+`"unparseable: <text>"` in the turn-by-turn trace, a different string
+the bad-sign list didn't have - so a model failing 2 of 3 smoke-test
+trials could still get waved through to the full battery.
+
+**The fix:**
+- `backends.py` - `_live_call()`'s retry loop now also catches
+  `(TimeoutError, urllib.error.URLError)`, same exponential backoff as
+  429, no `Retry-After` to read since there was never a response.
+- `run_battery_slot.py` - added `"unparseable:"` to `KNOWN_BAD_SIGNS`.
+  It only ever prints once a move fails the self-correction retry too,
+  so it's a reliable "this trial genuinely gave up" signal, not a
+  guess - safe to treat as disqualifying.
+
+**Verified:**
+- Scripted regression, both decision modes: **118/118, 100%**, unaffected.
+- Mocked `urlopen` raising `TimeoutError` twice then succeeding:
+  confirmed exactly 3 calls, correct result on the third.
+- Confirmed a 400 (non-retryable) still raises on the first attempt,
+  unaffected by the new except clause.
+- Confirmed `"unparseable:"` in a smoke test's captured output is now
+  detected by `KNOWN_BAD_SIGNS` directly.
+
+---
+
 ## 2026-09-18 — Extended the self-correction retry to cover valid JSON missing its envelope
 
 **Found by:** the v1-vs-v2 descriptor comparison's first smoke test

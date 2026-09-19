@@ -1342,6 +1342,12 @@ def _live_call(messages):
     # Retry with backoff, honouring Retry-After when the provider sends
     # one; anything else (a real auth/model/request error) still fails
     # immediately, not silently retried into a wrong answer.
+    # Also retries on a bare network timeout/connection failure - seen
+    # live (mistralai/mistral-small-3.2-24b-instruct): a TimeoutError
+    # from the socket layer itself (the response never arrived within
+    # 60s), not an HTTP error at all, aborted a full battery with
+    # nothing saved. No Retry-After to read here since the connection
+    # never produced a response - same exponential backoff as 429.
     max_retries = 3
     delay = 2.0
     for attempt in range(max_retries + 1):
@@ -1360,6 +1366,11 @@ def _live_call(messages):
                 except ValueError:
                     pass
             time.sleep(wait)
+            delay *= 2
+        except (TimeoutError, urllib.error.URLError) as e:
+            if attempt == max_retries:
+                raise
+            time.sleep(delay)
             delay *= 2
     # A malformed request or an OpenRouter-side problem (bad model slug,
     # rate limit, no credit) comes back as HTTP 200 with an "error" body
