@@ -81,14 +81,16 @@ since the brief's table was set.
 |---|---|---|---|
 | A | OpenAI | `openai/gpt-5.6-luna` | Cheap — **done** |
 | B | DeepSeek | `deepseek/deepseek-v4.1-flash` | Cheap — **done** (covered twice - see note below) |
-| C | Mistral | `mistralai/mistral-small-3.2-24b-instruct` | Cheap — retrying (swapped from `mistral-small-2603`, which kept 429-ing for hours - see below) |
+| C | Mistral | `mistralai/mistral-medium-3-5` | Mid (upgraded from Cheap - see below) — **done** |
 | D | Google | `google/gemini-3.8-flash` | Mid — **done** (covered twice - see note below) |
 | E | Qwen | `qwen/qwen3.8-max-0902` | Mid — **done** |
 | F | Anthropic | `anthropic/claude-opus-5` | Frontier — **`REF-6007` only, already run, $0 more to spend** |
 | G (7th member) | — | v1-vs-v2 prompt pass, on whichever model the team fixes | — |
 
-3 cheap + 2 mid + 1 frontier, 6 distinct families, 2+ tiers — satisfies
-every constraint above with room to argue about the exact picks.
+Ended up **2 cheap + 3 mid + 1 frontier** (slot C moved from Cheap to
+Mid once `mistral-medium-3-5` turned out to be the model that actually
+worked - see the results table below), 6 distinct families, 2+ tiers -
+still satisfies every hard constraint above.
 
 ### Results so far
 
@@ -96,7 +98,7 @@ every constraint above with room to argue about the exact picks.
 |---|---|---|---|---|---|
 | A | `openai/gpt-5.6-luna` | 40.7% (48/118) | 94.9% (112/118) | US$0.1473 | Done, committed as `results_model_gpt5.6-luna.json` |
 | B | `deepseek/deepseek-v4.1-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.1294 | Done, committed as `results_model_deepseek-v4.1-flash.json` - best decision-level accuracy so far |
-| C | `mistralai/mistral-small-3.2-24b-instruct` | — | — | — | `mistral-small-2603` hit a `max_tokens` truncation bug (fixed in code) then a persistent HTTP 429 that never cleared even after hours - not a transient burst limit. Swapped to this model instead (still Mistral family, even cheaper: $0.075/$0.20). Slug verified live - the first guess, without `-instruct`, was also wrong. Retrying. |
+| C | `mistralai/mistral-medium-3-5` | 34.7% (41/118) | 93.2% (110/118) | US$1.0167 | Done, committed as `results_model_mistralai-mistral-medium-3-5.json`. Third model tried for this slot: `mistral-small-2603` hit a `max_tokens` bug then a persistent HTTP 429 (fixed in code either way); `mistral-small-3.2-24b-instruct` narrated in prose instead of JSON on 2 of 3 smoke-test trials, even after the self-correction retry - a model-behaviour issue, not infra. This bigger, mid-tier model (Mistral's own description: "particularly strong at reliable multi-tool calling") ran clean on the first try - no crashes, no guardrail stops. Slot C ends up Mid tier, not Cheap as originally planned. |
 | D | `google/gemini-3.8-flash` | 40.7% (48/118) | **97.5%** (115/118) | US$0.6543 | Done, committed as `results_model_google-gemini-3.8-flash.json` - tied for best decision-level accuracy, but ~5x pricier than any cheap-tier model so far (mid-tier pricing). Hit a real incident on the way - a missing price crashed silently past the automation's own safety check; see `docs/CHANGELOG.md`. |
 | E | `qwen/qwen3.8-max-0902` | 40.7% (48/118) | 95.8% (113/118) | US$1.7483 | Done, committed as `results_model_qwen-qwen3.8-max-0902.json` - by far the most expensive slot, matching its $2/$6 pricing |
 | F | `anthropic/claude-opus-5` | 0/3 code-check pass (trigger-wording only) | escalate in all 3 (from the verbose transcript - no saved results file for a single-case run) | US$0.157 | Done (`REF-6007` only) |

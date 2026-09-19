@@ -72,10 +72,11 @@ cross-checked against `resolve_routing`'s logic, not just checked for
 existence. The rules-vs-model comparison is **done** (`openai/gpt-4o-mini`,
 live, full set, both modes — see `docs/RULES_VS_MODEL_RESULTS.pdf`). The
 v1-vs-v2 descriptor comparison (D2b) is **done** too — see
-`docs/V1_VS_V2_DESCRIPTORS_RESULTS.pdf`. The D5(b) cross-model battery has
-its frontier slot done (`claude-opus-5`, `REF-6007`, see
-`docs/MODEL_BATTERY_PLAN.pdf`) with a few cheap/mid-tier slots still open
-for the team. The guardrail checklist (D3b) is built
+`docs/V1_VS_V2_DESCRIPTORS_RESULTS.pdf`. The D5(b) cross-model battery is
+**fully done** — all 6 slots (`gpt-5.6-luna`, `deepseek-v4.1-flash`,
+`mistral-medium-3-5`, `gemini-3.8-flash`, `qwen3.8-max-0902`,
+`claude-opus-5` on `REF-6007` only) — see `docs/MODEL_BATTERY_PLAN.pdf`
+for the full results table. The guardrail checklist (D3b) is built
 (`D3_guardrails-Cao Xiaohan/`). The judgement check (D4) is not started —
 see the "what's still open" sections in `docs/DATA_NOTES.md` and the run
 guide.
