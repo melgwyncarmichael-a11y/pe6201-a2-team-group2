@@ -160,6 +160,15 @@ PRICES = {
     # my first guess ("mistral-small-3.2-24b", no "-instruct") was ALSO
     # wrong, same lesson as the other slugs in this file.
     "mistralai/mistral-small-3.2-24b-instruct": (0.075, 0.20),
+    # Third Mistral attempt after mistral-small-3.2-24b-instruct's smoke
+    # test showed 2 of 3 trials narrating in prose instead of JSON, even
+    # after the self-correction retry - a model-behaviour issue, not an
+    # infra one. Mistral's own description calls this one "particularly
+    # strong at reliable multi-tool calling" - a bigger, mid-tier model
+    # chosen specifically to test whether that solves it. If this ALSO
+    # fails, the team's next move is a different family for slot C, not
+    # a fourth Mistral variant.
+    "mistralai/mistral-medium-3-5": (1.50, 7.50),
     # "your/model-here":   (0.00, 0.00),  # add yours before your battery run
 }
 
