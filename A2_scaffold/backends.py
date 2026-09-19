@@ -1336,18 +1336,19 @@ def _live_call(messages):
         headers={"Authorization": "Bearer " + config.API_KEY,
                  "Content-Type": "application/json"})
 
-    # Rate limits are expected, not exceptional, once a battery makes
-    # hundreds of calls in a session - seen live (mistralai/mistral-
-    # small-2603) as a bare HTTP 429 that used to abort the whole run.
-    # Retry with backoff, honouring Retry-After when the provider sends
-    # one; anything else (a real auth/model/request error) still fails
-    # immediately, not silently retried into a wrong answer.
-    # Also retries on a bare network timeout/connection failure - seen
-    # live (mistralai/mistral-small-3.2-24b-instruct): a TimeoutError
-    # from the socket layer itself (the response never arrived within
-    # 60s), not an HTTP error at all, aborted a full battery with
-    # nothing saved. No Retry-After to read here since the connection
-    # never produced a response - same exponential backoff as 429.
+    # Transient infra failures are expected, not exceptional, once a
+    # battery makes hundreds of calls in a session - three different
+    # flavours hit live in one session: HTTP 429 (mistral-small-2603),
+    # a bare socket TimeoutError (mistral-small-3.2-24b-instruct), and
+    # HTTP 504 Gateway Timeout (same model, next retry). All three used
+    # to abort the whole run uncaught. Retry with backoff on the
+    # standard retryable HTTP status codes - 429 (rate limit) and the
+    # transient 5xx family (500/502/503/504, all "the server had a
+    # temporary problem," never a real request/auth/model error) -
+    # honouring Retry-After when the provider sends one. Anything else
+    # (400, 401, 404, ...) still fails immediately - retrying a real
+    # bad request would just mask it behind a delay.
+    RETRYABLE_HTTP_CODES = {429, 500, 502, 503, 504}
     max_retries = 3
     delay = 2.0
     for attempt in range(max_retries + 1):
@@ -1356,7 +1357,7 @@ def _live_call(messages):
                 payload = json.load(r)
             break
         except urllib.error.HTTPError as e:
-            if e.code != 429 or attempt == max_retries:
+            if e.code not in RETRYABLE_HTTP_CODES or attempt == max_retries:
                 raise
             wait = delay
             retry_after = e.headers.get("Retry-After") if e.headers else None
